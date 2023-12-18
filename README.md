@@ -17,7 +17,7 @@ In your page you need that minimum HTML structure.
     <input type="file" id="simple-input_file">
 </div>
 ```
-Tehn in your javascript you can instanciate new Uploader.
+Then in your javascript you can instanciate new Uploader.
 ```js
 var domRoot = document.getElementById("uploader-dom");
 var err = new Uploader(domRoot);

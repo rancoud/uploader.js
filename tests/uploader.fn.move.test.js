@@ -5,8 +5,10 @@ window.customZoomUpdate = function(uploaderInstance, from) {
         return;
     }
 
+    // eslint-disable-next-line jest/no-standalone-expect
     expect(uploaderInstance.inProgress).toBe(true);
     uploaderInstance.updateZoomFromInput({ preventDefault: () => {} });
+    // eslint-disable-next-line jest/no-standalone-expect
     expect(uploaderInstance.inProgress).toBe(true);
 }
 
@@ -713,7 +715,7 @@ describe("uploader", function(){
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
-            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            //var drawCalls = uploader.canvasContext.__getDrawCalls();
             /*expect(drawCalls).toStrictEqual([
                 {
                     "props": {
@@ -774,7 +776,7 @@ describe("uploader", function(){
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
-            drawCalls = uploader.canvasContext.__getDrawCalls();
+            //drawCalls = uploader.canvasContext.__getDrawCalls();
             /*expect(drawCalls).toStrictEqual([
                 {
                     "props": {
@@ -1366,7 +1368,7 @@ describe("uploader", function(){
             expect(uploaderZoomOut).toHaveBeenCalledTimes(0);
             uploaderZoomOut.mockClear();
 
-            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            //var drawCalls = uploader.canvasContext.__getDrawCalls();
             /*expect(drawCalls).toStrictEqual([
                 {
                     "props": {
@@ -1416,7 +1418,7 @@ describe("uploader", function(){
             expect(uploaderZoomOut).toHaveBeenCalledTimes(0);
             uploaderZoomOut.mockClear();
 
-            drawCalls = uploader.canvasContext.__getDrawCalls();
+            //drawCalls = uploader.canvasContext.__getDrawCalls();
             /*expect(drawCalls).toStrictEqual([
                 {
                     "props": {
@@ -1462,7 +1464,7 @@ describe("uploader", function(){
 
             uploader.updateZoomFromInput({target:{value:-1}});
 
-            drawCalls = uploader.canvasContext.__getDrawCalls();
+            //drawCalls = uploader.canvasContext.__getDrawCalls();
             /*expect(drawCalls).toStrictEqual([
                 {
                     "props": {

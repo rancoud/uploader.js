@@ -1,21 +1,35 @@
+/* global Uint8Array */
+var ZoomModeCenter = "center";
+var ZoomModePoint = "point";
+
 /**
+ * Get HTML Element.
  *
+ * @param {string} attributeName - attribute name
+ * @param {string} elementID     - id
+ * @returns {Error|HTMLElement}
  */
-function getHTMLElement(attributeName, elemID) {
-    if (typeof elemID !== "string") {
-        return new TypeError("Invalid attribute " + attributeName + ", expect string, get " + typeof elemID);
+function getHTMLElement(attributeName, elementID) {
+    /** @type HTMLElement */
+    var htmlElementObject = null;
+
+    if (typeof elementID !== "string") {
+        return new TypeError("Invalid attribute " + attributeName + ", expect string, get " + typeof elementID);
     }
 
-    var elemObj = document.getElementById(elemID);
-    if (!elemObj) {
-        return new Error("DOM element " + elemID + " not found");
+    htmlElementObject = document.getElementById(elementID);
+    if (!htmlElementObject) {
+        return new Error("DOM element " + elementID + " not found");
     }
 
-    return elemObj;
+    return htmlElementObject;
 }
 
 /**
+ * Get function.
  *
+ * @param {string} fn - function to use, can be separated with '.'
+ * @returns {Function|undefined}
  */
 function getFunction(fn) {
     var scope = window;
@@ -37,21 +51,25 @@ function getFunction(fn) {
     return scope[fnParts[fnParts.length - 1]];
 }
 
-var ZoomModeCenter = "center";
-var ZoomModePoint = "point";
-
 /**
+ * Uploader.
  *
+ * @class Uploader
+ * @param {HTMLElement} rootDom - rootDom
+ * @returns {Error|undefined}
  */
-function Uploader(masterDom) {
+function Uploader(rootDom) {
+    /** @type Error */
+    var err = null;
+
     this.initAttributes();
 
-    var err = this.verifyMandatoryDataAttributes(masterDom);
+    err = this.verifyMandatoryDataAttributes(rootDom);
     if (err !== null) {
         return err;
     }
 
-    err = this.verifyOptionalDataAttributes(masterDom);
+    err = this.verifyOptionalDataAttributes(rootDom);
     if (err !== null) {
         return err;
     }
@@ -72,7 +90,7 @@ function Uploader(masterDom) {
     }
 }
 
-Uploader.prototype.initAttributes = function() {
+Uploader.prototype.initAttributes = function initAttributes() {
     this.img = null;
     this.imgSizeComputed = null;
 
@@ -82,9 +100,9 @@ Uploader.prototype.initAttributes = function() {
     this.eventChangeInputZoomListener = this.changeInputZoomListener.bind(this);
     this.eventInputInputZoomListener = this.inputInputZoomListener.bind(this);
     this.zoomCurrent = 1;
-    this._zoomEventHasNeverFired = null;
-    this._zoomCurrentValue = null;
-    this._zoomLastValue = null;
+    this.zoomEventHasNeverFired = null;
+    this.zoomCurrentValue = null;
+    this.zoomLastValue = null;
 
     this.eventSaveListener = this.save.bind(this);
     this.eventSaveOnLoad = this.saveOnLoad.bind(this);
@@ -121,6 +139,7 @@ Uploader.prototype.initAttributes = function() {
             error: null
         },
         save: {
+            /* eslint-disable-next-line camelcase */
             update_form_data: null,
             success: null,
             error: null
@@ -143,14 +162,20 @@ Uploader.prototype.initAttributes = function() {
     this.inProgress = false;
 };
 
-Uploader.prototype.verifyMandatoryDataAttributes = function(masterDom) {
-    var inputFileID = masterDom.getAttribute("data-uploader-input_file-id");
+Uploader.prototype.verifyMandatoryDataAttributes = function verifyMandatoryDataAttributes(masterDom) {
+    /** @type string */
+    var inputFileID = "";
+
+    /** @type string */
+    var canvasID = "";
+
+    inputFileID = masterDom.getAttribute("data-uploader-input_file-id");
     this.inputFileObj = getHTMLElement("data-uploader-input_file-id", inputFileID);
     if (!(this.inputFileObj instanceof HTMLElement)) {
         return this.inputFileObj;
     }
 
-    var canvasID = masterDom.getAttribute("data-uploader-canvas-id");
+    canvasID = masterDom.getAttribute("data-uploader-canvas-id");
     this.canvasObj = getHTMLElement("data-uploader-canvas-id", canvasID);
     if (!(this.canvasObj instanceof HTMLElement)) {
         return this.canvasObj;
@@ -159,9 +184,66 @@ Uploader.prototype.verifyMandatoryDataAttributes = function(masterDom) {
     return null;
 };
 
-Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
+Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAttributes(masterDom) {
+    /** @type {string|null} */
+    var divErrorID = null;
+
+    /** @type {string|null} */
+    var divUploadID = null;
+
+    /** @type {string|null} */
+    var divPreviewID = null;
+
+    /** @type string */
+    var maskSize = "";
+
+    /** @type number */
+    var maskSizeWidth = 0;
+
+    /** @type number */
+    var maskSizeHeight = 0;
+
+    /** @type string[] */
+    var maskSizeParts = [];
+
+    /** @type string */
+    var maskColor = "";
+
+    /** @type string */
+    var maskRadius = "";
+
+    /** @type number */
+    var minMaskSize = 0;
+
+    /** @type string */
+    var maskConstraint = "";
+
+    /** @type string */
+    var inputZoomID = "";
+
+    /** @type Error */
+    var errorCallbacks = null;
+
+    /** @type string */
+    var btnSaveID = "";
+
+    /** @type string */
+    var btnCancelID = "";
+
+    /** @type string */
+    var errorLoadMessage = "";
+
+    /** @type string */
+    var errorUploadMessage = "";
+
+    /** @type {string|number} */
+    var scaleFactor = "";
+
+    /** @type string */
+    var cssClassCanvasMoving = "";
+
     // region divs
-    var divErrorID = masterDom.getAttribute("data-uploader-div_error-id") || null;
+    divErrorID = masterDom.getAttribute("data-uploader-div_error-id") || null;
     if (divErrorID !== null) {
         this.divErrorObj = getHTMLElement("data-uploader-div_error-id", divErrorID);
         if (!(this.divErrorObj instanceof HTMLElement)) {
@@ -169,7 +251,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
         }
     }
 
-    var divUploadID = masterDom.getAttribute("data-uploader-div_upload-id") || null;
+    divUploadID = masterDom.getAttribute("data-uploader-div_upload-id") || null;
     if (divUploadID !== null) {
         this.divUploadObj = getHTMLElement("data-uploader-div_upload-id", divUploadID);
         if (!(this.divUploadObj instanceof HTMLElement)) {
@@ -177,7 +259,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
         }
     }
 
-    var divPreviewID = masterDom.getAttribute("data-uploader-div_preview-id") || null;
+    divPreviewID = masterDom.getAttribute("data-uploader-div_preview-id") || null;
     if (divPreviewID !== null) {
         this.divPreviewObj = getHTMLElement("data-uploader-div_preview-id", divPreviewID);
         if (!(this.divPreviewObj instanceof HTMLElement)) {
@@ -190,15 +272,13 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
      * region mask
      * mask size
      */
-    var maskSize = masterDom.getAttribute("data-uploader-mask-size");
+    maskSize = masterDom.getAttribute("data-uploader-mask-size");
     if (maskSize !== null) {
-        var maskSizeWidth = 0;
-        var maskSizeHeight = 0;
         if (maskSize.indexOf(",") === -1) {
             maskSizeWidth = maskSize >> 0;
             maskSizeHeight = maskSize >> 0;
         } else {
-            var maskSizeParts = maskSize.split(",");
+            maskSizeParts = maskSize.split(",");
             maskSizeWidth = maskSizeParts[0] >> 0;
             maskSizeHeight = maskSizeParts[1] >> 0;
         }
@@ -218,7 +298,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     }
 
     // Mask color
-    var maskColor = masterDom.getAttribute("data-uploader-mask-color");
+    maskColor = masterDom.getAttribute("data-uploader-mask-color");
     if (maskColor === null) {
         this.maskRaw.color = "rgba(255, 255, 255, 0.5)";
     } else if (this.maskRaw.size === null) {
@@ -228,7 +308,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     }
 
     // Mask radius
-    var maskRadius = masterDom.getAttribute("data-uploader-mask-radius");
+    maskRadius = masterDom.getAttribute("data-uploader-mask-radius");
     if (maskRadius !== null) {
         if (this.maskRaw.size === null) {
             return new Error("Invalid attribute data-uploader-mask-radius, you have to set data-uploader-mask-size first");
@@ -236,15 +316,15 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
 
         this.maskRaw.radius = maskRadius >> 0;
         if (this.maskRaw.radius > 0) {
-            var minMaskSize = Math.min(this.maskRaw.size.width, this.maskRaw.size.height);
+            minMaskSize = Math.min(this.maskRaw.size.width, this.maskRaw.size.height);
             if (this.maskRaw.radius > minMaskSize) {
+                /* eslint-disable-next-line no-extra-parens */
                 this.maskRaw.radius = (minMaskSize / 2) >> 0;
             }
         }
     }
 
-    // Mask constraint
-    var maskConstraint = masterDom.getAttribute("data-uploader-mask-constraint");
+    maskConstraint = masterDom.getAttribute("data-uploader-mask-constraint");
     if (maskConstraint !== null) {
         if (this.maskRaw.size === null) {
             return new Error("Invalid attribute data-uploader-mask-constraint, you have to set data-uploader-mask-size first");
@@ -261,7 +341,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     // endregion
 
     // region zoom
-    var inputZoomID = masterDom.getAttribute("data-uploader-input_zoom-id");
+    inputZoomID = masterDom.getAttribute("data-uploader-input_zoom-id");
     if (inputZoomID !== null) {
         this.inputZoomObj = getHTMLElement("data-uploader-input_zoom-id", inputZoomID);
         if (!(this.inputZoomObj instanceof HTMLElement)) {
@@ -272,35 +352,46 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
 
     // region callbacks
     /**
+     * Parse callbacks.
      *
+     * @param {Uploader} instance  - instance of Uploader
+     * @param {object}   callbacks - object of callbacks
+     * @param {string[]} parentKey - list of parents key
+     * @returns {Error|null}
      */
     function parseCallbacks(instance, callbacks, parentKey) {
-        var idxParentKey;
+        var err = null;
+        var key = null;
+        var localKey = [];
+        var idxParentKey = 0;
         var lenParentKey = parentKey.length;
+        var callbackName = "";
+        var callbackFunction = null;
 
-        for (var key in callbacks) {
+        for (key in callbacks) {
             /* istanbul ignore else */
+            // eslint-disable-next-line no-prototype-builtins
             if (callbacks.hasOwnProperty(key)) {
-                var localKey = [];
+                localKey = [];
                 for (idxParentKey = 0; idxParentKey < lenParentKey; idxParentKey++) {
                     localKey[idxParentKey] = parentKey;
                 }
                 localKey.push(key);
 
-                if (callbacks[key] !== null) {
-                    var err = parseCallbacks(instance, callbacks[key], localKey);
-                    if (err !== null) {
-                        return err;
-                    }
-                } else {
-                    var callbackName = masterDom.getAttribute("data-uploader-callback-" + localKey.join("-")) || null;
+                if (callbacks[key] === null) {
+                    callbackName = masterDom.getAttribute("data-uploader-callback-" + localKey.join("-")) || null;
                     if (callbackName !== null) {
-                        var callbackFunction = getFunction(callbackName);
+                        callbackFunction = getFunction(callbackName);
                         if (typeof callbackFunction === "function") {
                             callbacks[key] = callbackFunction;
                         } else {
                             return new Error("Invalid function " + callbackName + " in data-uploader-callback-" + localKey.join("-"));
                         }
+                    }
+                } else {
+                    err = parseCallbacks(instance, callbacks[key], localKey);
+                    if (err !== null) {
+                        return err;
                     }
                 }
             }
@@ -309,14 +400,14 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
         return null;
     }
 
-    var errorCallbacks = parseCallbacks(this, this.callbacks, []);
+    errorCallbacks = parseCallbacks(this, this.callbacks, []);
     if (errorCallbacks !== null) {
         return errorCallbacks;
     }
     // endregion
 
     // region save
-    var btnSaveID = masterDom.getAttribute("data-uploader-btn_save-id");
+    btnSaveID = masterDom.getAttribute("data-uploader-btn_save-id");
     if (btnSaveID !== null) {
         this.btnSaveObj = getHTMLElement("data-uploader-btn_save-id", btnSaveID);
         if (!(this.btnSaveObj instanceof HTMLElement)) {
@@ -330,7 +421,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     // endregion
 
     // region cancel
-    var btnCancelID = masterDom.getAttribute("data-uploader-btn_cancel-id");
+    btnCancelID = masterDom.getAttribute("data-uploader-btn_cancel-id");
     if (btnCancelID !== null) {
         this.btnCancelObj = getHTMLElement("data-uploader-btn_cancel-id", btnCancelID);
         if (!(this.btnCancelObj instanceof HTMLElement)) {
@@ -340,19 +431,19 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     // endregion
 
     // region errors
-    var errorLoadMessage = masterDom.getAttribute("data-uploader-error-load") || "";
+    errorLoadMessage = masterDom.getAttribute("data-uploader-error-load") || "";
     if (errorLoadMessage.length > 0) {
         this.errorLoadMessage = errorLoadMessage;
     }
 
-    var errorUploadMessage = masterDom.getAttribute("data-uploader-error-upload") || "";
+    errorUploadMessage = masterDom.getAttribute("data-uploader-error-upload") || "";
     if (errorUploadMessage.length > 0) {
         this.errorUploadMessage = errorUploadMessage;
     }
     // endregion
 
     // region scale factor
-    var scaleFactor = masterDom.getAttribute("data-uploader-scale_factor") || 1.05;
+    scaleFactor = masterDom.getAttribute("data-uploader-scale_factor") || 1.05;
     if (scaleFactor !== 1.05) {
         scaleFactor = parseFloat(scaleFactor);
         if (scaleFactor === 0 || Number.isNaN(scaleFactor)) {
@@ -363,7 +454,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
     // endregion
 
     // region css class canvas moving
-    var cssClassCanvasMoving = masterDom.getAttribute("data-uploader-css-canvas_moving") || "";
+    cssClassCanvasMoving = masterDom.getAttribute("data-uploader-css-canvas_moving") || "";
     if (cssClassCanvasMoving !== "") {
         if (cssClassCanvasMoving.indexOf(" ") !== -1) {
             return new Error("Invalid css class \"" + cssClassCanvasMoving + "\" in data-uploader-css-canvas_moving, space is not allowed");
@@ -377,11 +468,11 @@ Uploader.prototype.verifyOptionalDataAttributes = function(masterDom) {
 };
 
 // region Initialize
-Uploader.prototype.initInputFile = function() {
+Uploader.prototype.initInputFile = function initInputFile() {
     this.inputFileObj.addEventListener("change", this.eventChangeInputFileListener);
 };
 
-Uploader.prototype.initCanvas = function() {
+Uploader.prototype.initCanvas = function initCanvas() {
     this.lastX = this.canvasObj.width / 2;
     this.lastY = this.canvasObj.height / 2;
 
@@ -400,7 +491,7 @@ Uploader.prototype.initCanvas = function() {
     this.eventHandleScrollListener = this.handleScroll.bind(this);
 };
 
-Uploader.prototype.initDivs = function() {
+Uploader.prototype.initDivs = function initDivs() {
     if (this.divPreviewObj !== null) {
         this.divPreviewObj.setAttribute("hidden", "");
     }
@@ -412,13 +503,15 @@ Uploader.prototype.initDivs = function() {
     this.hideError();
 };
 
-Uploader.prototype.initMask = function() {
+Uploader.prototype.initMask = function initMask() {
     if (this.maskRaw.size === null) {
         return;
     }
 
     this.mask = {
+        /* eslint-disable-next-line no-extra-parens */
         x: (this.canvasObj.width / 2) - (this.maskRaw.size.width / 2),
+        /* eslint-disable-next-line no-extra-parens */
         y: (this.canvasObj.height / 2) - (this.maskRaw.size.height / 2),
         width: this.maskRaw.size.width,
         height: this.maskRaw.size.height,
@@ -428,7 +521,7 @@ Uploader.prototype.initMask = function() {
     };
 };
 
-Uploader.prototype.initZoom = function() {
+Uploader.prototype.initZoom = function initZoom() {
     if (this.inputZoomObj !== null) {
         this.inputZoomObj.addEventListener("input", this.eventInputInputZoomListener);
         this.inputZoomObj.addEventListener("change", this.eventChangeInputZoomListener);
@@ -439,7 +532,7 @@ Uploader.prototype.initZoom = function() {
     }
 };
 
-Uploader.prototype.initSave = function() {
+Uploader.prototype.initSave = function initSave() {
     if (this.btnSaveObj === null) {
         return;
     }
@@ -447,7 +540,7 @@ Uploader.prototype.initSave = function() {
     this.btnSaveObj.addEventListener("click", this.eventSaveListener);
 };
 
-Uploader.prototype.initCancel = function() {
+Uploader.prototype.initCancel = function initCancel() {
     if (this.btnCancelObj === null) {
         return;
     }
@@ -457,7 +550,7 @@ Uploader.prototype.initCancel = function() {
 // endregion
 
 // region Buttons actions
-Uploader.prototype.changeInputFile = function() {
+Uploader.prototype.changeInputFile = function changeInputFile() {
     if (this.inputFileObj.files.length < 1) {
         return;
     }
@@ -465,14 +558,14 @@ Uploader.prototype.changeInputFile = function() {
     this.reader.readAsDataURL(this.inputFileObj.files[0]);
 };
 
-Uploader.prototype.treatImage = function() {
+Uploader.prototype.treatImage = function treatImage() {
     this.img = new Image();
     this.img.onload = this.eventTreatImageOnLoad;
     this.img.onerror = this.eventTreatImageOnError;
     this.img.src = this.reader.result;
 };
 
-Uploader.prototype.treatImageOnLoad = function() {
+Uploader.prototype.treatImageOnLoad = function treatImageOnLoad() {
     if (this.img.width <= 0 || this.img.height <= 0) {
         this.treatImageOnError();
         return;
@@ -511,7 +604,7 @@ Uploader.prototype.treatImageOnLoad = function() {
     }
 };
 
-Uploader.prototype.treatImageOnError = function() {
+Uploader.prototype.treatImageOnError = function treatImageOnError() {
     this.img = null;
 
     this.clearCanvas();
@@ -523,7 +616,7 @@ Uploader.prototype.treatImageOnError = function() {
     }
 };
 
-Uploader.prototype.addEventListeners = function() {
+Uploader.prototype.addEventListeners = function addEventListeners() {
     this.canvasObj.addEventListener("mousedown", this.eventMouseDownListener, {passive: false});
     window.addEventListener("mousemove", this.eventMouseMoveListener, {passive: false});
     window.addEventListener("mouseup", this.eventMouseUpListener, {passive: false});
@@ -536,7 +629,7 @@ Uploader.prototype.addEventListeners = function() {
     this.canvasObj.addEventListener("mousewheel", this.eventHandleScrollListener, {passive: false});
 };
 
-Uploader.prototype.removeEventListeners = function() {
+Uploader.prototype.removeEventListeners = function removeEventListeners() {
     this.canvasObj.removeEventListener("mousedown", this.eventMouseDownListener);
     window.removeEventListener("mousemove", this.eventMouseMoveListener);
     window.removeEventListener("mouseup", this.eventMouseUpListener);
@@ -549,7 +642,7 @@ Uploader.prototype.removeEventListeners = function() {
     this.canvasObj.removeEventListener("mousewheel", this.eventHandleScrollListener);
 };
 
-Uploader.prototype.cancel = function() {
+Uploader.prototype.cancel = function cancel() {
     this.img = null;
     this.imgSizeComputed = null;
     this.zoomCurrent = 1;
@@ -575,16 +668,28 @@ Uploader.prototype.cancel = function() {
     }
 };
 
-Uploader.prototype.save = function() {
+Uploader.prototype.save = function save() {
+    /** @type {string} */
+    var dataURL = "";
+
+    /** @type Blob */
+    var blob = null;
+
+    /** @type FormData */
+    var formData = null;
+
+    /** @type XMLHttpRequest */
+    var XHR = null;
+
     if (this.img === null || this.canSave === false) {
         return;
     }
 
     this.canSave = false;
 
-    var dataURL = this.getCanvasDataURL();
-    var blob = dataURItoBlob(dataURL);
-    var formData = new FormData();
+    dataURL = this.getCanvasDataURL();
+    blob = dataURItoBlob(dataURL);
+    formData = new FormData();
 
     formData.append(this.uploadPrefix + this.uploadName, blob);
     formData.append(this.uploadPrefix + "canvas_width", this.canvasObj.width);
@@ -601,14 +706,14 @@ Uploader.prototype.save = function() {
         formData = this.callbacks.save.update_form_data(this, "save", formData);
     }
 
-    var XHR = new XMLHttpRequest();
+    XHR = new XMLHttpRequest();
     XHR.addEventListener("load", this.eventSaveOnLoad);
     XHR.addEventListener("error", this.eventSaveOnError);
     XHR.open("POST", this.uploadUrl);
     XHR.send(formData);
 };
 
-Uploader.prototype.saveOnLoad = function() {
+Uploader.prototype.saveOnLoad = function saveOnLoad() {
     this.canSave = true;
 
     this.hideError();
@@ -618,7 +723,7 @@ Uploader.prototype.saveOnLoad = function() {
     }
 };
 
-Uploader.prototype.saveOnError = function(error) {
+Uploader.prototype.saveOnError = function saveOnError(error) {
     this.canSave = true;
 
     this.showError(this.errorUploadMessage);
@@ -629,10 +734,26 @@ Uploader.prototype.saveOnError = function(error) {
 };
 
 /**
+ * Convert DataURI to Blob.
  *
+ * @param {string} dataURI - data from canvas
+ * @returns {Blob}
  */
 function dataURItoBlob(dataURI) {
-    var byteString;
+    /** @type string */
+    var byteString = "";
+
+    /** @type string */
+    var mimeString = "";
+
+    /** @type Uint8Array */
+    var uInt8Array = null;
+
+    /** @type Number */
+    var idxArray = 0;
+
+    /** @type Number */
+    var lenArray = 0;
 
     /* istanbul ignore else */
     if (dataURI.split(",")[0].indexOf("base64") >= 0) {
@@ -641,20 +762,23 @@ function dataURItoBlob(dataURI) {
         byteString = decodeURI(dataURI.split(",")[1]);
     }
 
-    var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
-    var ia = new Uint8Array(byteString.length);
-    var len = byteString.length;
-    for (var i = 0; i < len; i++) {
-        ia[i] = byteString.charCodeAt(i);
+    uInt8Array = new Uint8Array(byteString.length);
+    lenArray = byteString.length;
+    for (; idxArray < lenArray; ++idxArray) {
+        uInt8Array[idxArray] = byteString.charCodeAt(idxArray);
     }
 
-    return new Blob([ia], {type: mimeString});
+    return new Blob([uInt8Array], {type: mimeString});
 }
 // endregion
 
 // region Draw
-Uploader.prototype.computeSize = function() {
+Uploader.prototype.computeSize = function computeSize() {
+    /** @type number */
+    var ratio = 0;
+
     var mask = {
         x: 0,
         y: 0,
@@ -676,17 +800,19 @@ Uploader.prototype.computeSize = function() {
         height: mask.height
     };
 
-    var ratio = Math.max(mask.width / this.img.width, mask.height / this.img.height);
+    ratio = Math.max(mask.width / this.img.width, mask.height / this.img.height);
 
     this.imgSizeComputed.height = this.img.height * ratio;
     this.imgSizeComputed.width = this.img.width * ratio;
+    /* eslint-disable-next-line no-extra-parens */
     this.imgSizeComputed.x = mask.x - ((this.imgSizeComputed.width / 2) - (mask.width / 2));
+    /* eslint-disable-next-line no-extra-parens */
     this.imgSizeComputed.y = mask.y - ((this.imgSizeComputed.height / 2) - (mask.height / 2));
 
     return this.imgSizeComputed;
 };
 
-Uploader.prototype.draw = function() {
+Uploader.prototype.draw = function draw() {
     this.clearCanvas();
 
     this.drawImage();
@@ -703,17 +829,24 @@ Uploader.prototype.draw = function() {
     }
 };
 
-Uploader.prototype.clearCanvas = function() {
+Uploader.prototype.clearCanvas = function clearCanvas() {
     var p1 = this.canvasContext.transformedPoint(0, 0);
     var p2 = this.canvasContext.transformedPoint(this.canvasObj.width, this.canvasObj.height);
-    this.canvasContext.clearRect(p1.x, p1.y, (p2.x-p1.x), (p2.y-p1.y));
+    /* eslint-disable-next-line no-extra-parens */
+    this.canvasContext.clearRect(p1.x, p1.y, (p2.x - p1.x), (p2.y - p1.y));
 };
 
-Uploader.prototype.drawImage = function() {
+Uploader.prototype.drawImage = function drawImage() {
     this.canvasContext.drawImage(this.img, this.imgSizeComputed.x, this.imgSizeComputed.y, this.imgSizeComputed.width, this.imgSizeComputed.height);
 };
 
-Uploader.prototype.drawMask = function() {
+Uploader.prototype.drawMask = function drawMask() {
+    var x = 0;
+    var y = 0;
+    var width = 0;
+    var height = 0;
+    var radius = null;
+
     if (this.mask === null) {
         return;
     }
@@ -723,11 +856,11 @@ Uploader.prototype.drawMask = function() {
     this.canvasContext.fillStyle = this.mask.color;
     this.canvasContext.beginPath();
 
-    var x = this.mask.x;
-    var y = this.mask.y;
-    var width = this.mask.width;
-    var height = this.mask.height;
-    var radius = {
+    x = this.mask.x;
+    y = this.mask.y;
+    width = this.mask.width;
+    height = this.mask.height;
+    radius = {
         topLeft: this.mask.radius,
         topRight: this.mask.radius,
         bottomRight: this.mask.radius,
@@ -750,7 +883,10 @@ Uploader.prototype.drawMask = function() {
     this.canvasContext.restore();
 };
 
-Uploader.prototype.getCanvasDataURL = function() {
+Uploader.prototype.getCanvasDataURL = function getCanvasDataURL() {
+    /** @type string */
+    var dataURL = "";
+
     if (this.mask === null) {
         return this.canvasObj.toDataURL();
     }
@@ -759,7 +895,7 @@ Uploader.prototype.getCanvasDataURL = function() {
 
     this.drawImage();
 
-    var dataURL = this.canvasObj.toDataURL();
+    dataURL = this.canvasObj.toDataURL();
 
     this.drawMask();
 
@@ -768,7 +904,7 @@ Uploader.prototype.getCanvasDataURL = function() {
 // endregion
 
 // region Move
-Uploader.prototype.moveStart = function(event) {
+Uploader.prototype.moveStart = function moveStart(event) {
     pauseEvent(event);
 
     if (event.touches && event.touches.length > 0) {
@@ -789,7 +925,10 @@ Uploader.prototype.moveStart = function(event) {
     }
 };
 
-Uploader.prototype.moveMove = function(event) {
+Uploader.prototype.moveMove = function moveMove(event) {
+    var scale = 0;
+    var translation = {};
+
     if (!this.dragStart) {
         return;
     }
@@ -808,8 +947,8 @@ Uploader.prototype.moveMove = function(event) {
         return;
     }
 
-    var scale = this.canvasContext.getTransform().inverse().a;
-    var translation = this.keepImgInsideMaskBoundings({
+    scale = this.canvasContext.getTransform().inverse().a;
+    translation = this.keepImgInsideMaskBoundings({
         x: (this.lastX - this.dragStart.x) * scale,
         y: (this.lastY - this.dragStart.y) * scale
     });
@@ -823,13 +962,15 @@ Uploader.prototype.moveMove = function(event) {
     this.dragStart.y = this.lastY;
 };
 
-Uploader.prototype.moveEnd = function() {
+Uploader.prototype.moveEnd = function moveEnd() {
+    var translation = {};
+
     this.dragStart = null;
     if (this.cssClassCanvasMoving !== "") {
         this.canvasObj.classList.remove(this.cssClassCanvasMoving);
     }
 
-    var translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
+    translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
 
     if (translation.x !== 0 || translation.y !== 0) {
         this.canvasContext.translate(translation.x, translation.y);
@@ -837,7 +978,7 @@ Uploader.prototype.moveEnd = function() {
     }
 };
 
-Uploader.prototype.keepImgInsideMaskBoundings = function(translation) {
+Uploader.prototype.keepImgInsideMaskBoundings = function keepImgInsideMaskBoundings(translation) {
     if (this.mask === null || this.mask.constraint === false) {
         return translation;
     }
@@ -858,16 +999,19 @@ Uploader.prototype.keepImgInsideMaskBoundings = function(translation) {
         }
     }
 
+    /* eslint-disable-next-line no-extra-parens */
     if (this.ptBottomRightMask.x > (this.imgSizeComputed.x + this.imgSizeComputed.width)) {
         translation.x = this.ptBottomRightMask.x - (this.imgSizeComputed.x + this.imgSizeComputed.width);
+        /* eslint-disable-next-line no-extra-parens */
     } else if (this.ptBottomRightMask.x === (this.imgSizeComputed.x + this.imgSizeComputed.width)) {
         if (translation.x < 0) {
             translation.x = 0;
         }
     }
-
+    /* eslint-disable-next-line no-extra-parens */
     if (this.ptBottomRightMask.y > (this.imgSizeComputed.y + this.imgSizeComputed.height)) {
         translation.y = this.ptBottomRightMask.y - (this.imgSizeComputed.y + this.imgSizeComputed.height);
+        /* eslint-disable-next-line no-extra-parens */
     } else if (this.ptBottomRightMask.y === (this.imgSizeComputed.y + this.imgSizeComputed.height)) {
         if (translation.y < 0) {
             translation.y = 0;
@@ -879,7 +1023,10 @@ Uploader.prototype.keepImgInsideMaskBoundings = function(translation) {
 
 // Useful for disabling the selection with the mouse
 /**
+ * Pause Event.
  *
+ * @param {Event} event - event
+ * @returns {boolean}
  */
 function pauseEvent(event) {
     if (event.stopPropagation) {
@@ -898,7 +1045,12 @@ function pauseEvent(event) {
 // endregion
 
 // region Zoom
-Uploader.prototype.updateZoomFromInput = function(event) {
+Uploader.prototype.updateZoomFromInput = function updateZoomFromInput(event) {
+    var middleCanvasPoint = {};
+    var delta = 0;
+    var factor = 0;
+    var translation = {};
+
     if (this.img === null) {
         return;
     }
@@ -910,9 +1062,9 @@ Uploader.prototype.updateZoomFromInput = function(event) {
 
     this.inProgress = true;
 
-    var middleCanvasPoint = this.canvasContext.transformedPoint(this.canvasObj.width / 2, this.canvasObj.height / 2);
-    var delta = this.zoomCurrent - event.target.value;
-    var factor;
+    middleCanvasPoint = this.canvasContext.transformedPoint(this.canvasObj.width / 2, this.canvasObj.height / 2);
+    delta = this.zoomCurrent - event.target.value;
+
     if (delta > 0) {
         factor = Math.pow(this.scaleFactor, -1);
     } else {
@@ -925,11 +1077,11 @@ Uploader.prototype.updateZoomFromInput = function(event) {
                 break;
             }
 
-            this.zoomCurrent--;
-            delta--;
+            this.zoomCurrent -= 1;
+            delta -= 1;
         } else {
-            this.zoomCurrent++;
-            delta++;
+            this.zoomCurrent += 1;
+            delta += 1;
         }
 
         this.canvasContext.translate(middleCanvasPoint.x, middleCanvasPoint.y);
@@ -937,7 +1089,7 @@ Uploader.prototype.updateZoomFromInput = function(event) {
         this.canvasContext.translate(-middleCanvasPoint.x, -middleCanvasPoint.y);
     }
 
-    var translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
+    translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
     this.canvasContext.translate(translation.x, translation.y);
     this.draw();
 
@@ -948,39 +1100,43 @@ Uploader.prototype.updateZoomFromInput = function(event) {
     this.inProgress = false;
 };
 
-Uploader.prototype.inputInputZoomListener = function(event) {
-    this._zoomEventHasNeverFired = 1;
-    this._zoomCurrentValue = event.target.value;
+Uploader.prototype.inputInputZoomListener = function inputInputZoomListener(event) {
+    this.zoomEventHasNeverFired = 1;
+    this.zoomCurrentValue = event.target.value;
     /* istanbul ignore else */
-    if (this._zoomCurrentValue !== this._zoomLastValue) {
+    if (this.zoomCurrentValue !== this.zoomLastValue) {
         this.updateZoomFromInput(event);
     }
-    this._zoomLastValue = this._zoomCurrentValue;
+    this.zoomLastValue = this.zoomCurrentValue;
 };
 
-Uploader.prototype.changeInputZoomListener = function(event) {
+Uploader.prototype.changeInputZoomListener = function changeInputZoomListener(event) {
     /* istanbul ignore else */
-    if (!this._zoomEventHasNeverFired) {
+    if (!this.zoomEventHasNeverFired) {
         this.updateZoomFromInput(event);
     }
 };
 
-Uploader.prototype.zoomIn = function(zoomMode) {
-    this.zoomCurrent++;
+Uploader.prototype.zoomIn = function zoomIn(zoomMode) {
+    this.zoomCurrent += 1;
     this.zoom(1, zoomMode);
 };
 
-Uploader.prototype.zoomOut = function(zoomMode) {
+Uploader.prototype.zoomOut = function zoomOut(zoomMode) {
     if (this.zoomCurrent === 1) {
         return;
     }
 
-    this.zoomCurrent--;
+    this.zoomCurrent -= 1;
     this.zoom(-1, zoomMode);
 };
 
-Uploader.prototype.zoom = function(exponent, zoomMode) {
-    var pt;
+Uploader.prototype.zoom = function zoom(exponent, zoomMode) {
+    /** @type DOMPoint */
+    var pt = null;
+    var factor = 0;
+    var translation = {};
+
     if (zoomMode === ZoomModeCenter) {
         pt = this.canvasContext.transformedPoint(this.canvasObj.width / 2, this.canvasObj.height / 2);
     } else {
@@ -988,25 +1144,32 @@ Uploader.prototype.zoom = function(exponent, zoomMode) {
     }
 
     this.canvasContext.translate(pt.x, pt.y);
-    var factor = Math.pow(this.scaleFactor, exponent);
+    factor = Math.pow(this.scaleFactor, exponent);
     this.canvasContext.scale(factor, factor);
 
     this.canvasContext.translate(-pt.x, -pt.y);
 
-    var translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
+    translation = this.keepImgInsideMaskBoundings({x: 0, y: 0});
 
     this.canvasContext.translate(translation.x, translation.y);
     this.draw();
 };
 
-Uploader.prototype.handleScroll = function(event) {
+Uploader.prototype.handleScroll = function handleScroll(event) {
     var oldX = this.lastX;
     var oldY = this.lastY;
+    var wheelDirection = 0;
 
+    /* eslint-disable-next-line no-extra-parens */
     this.lastX = event.offsetX || (event.pageX - this.canvasObj.offsetLeft);
+    /* eslint-disable-next-line no-extra-parens */
     this.lastY = event.offsetY || (event.pageY - this.canvasObj.offsetTop);
 
-    var wheelDirection = (event.detail < 0) ? 1 : (event.wheelDelta > 0) ? 1 : -1;
+    wheelDirection = 1;
+    if (event.detail > 0 || event.wheelDelta < 0) {
+        wheelDirection = -1;
+    }
+
     /* istanbul ignore else */
     if (wheelDirection === 1) {
         this.zoomIn(ZoomModePoint);
@@ -1032,7 +1195,11 @@ Uploader.prototype.handleScroll = function(event) {
 // endregion
 
 // region Error
-Uploader.prototype.showError = function(message) {
+Uploader.prototype.showError = function showError(message) {
+    var parts = [];
+    var idxParts = 0;
+    var maxParts = 0;
+
     if (this.divErrorObj === null) {
         return;
     }
@@ -1041,10 +1208,9 @@ Uploader.prototype.showError = function(message) {
         this.divErrorObj.lastChild.remove();
     }
 
-    var parts = message.split("\n");
-    var idxParts = 0;
-    var maxParts = parts.length;
-    for (; idxParts < maxParts; idxParts++) {
+    parts = message.split("\n");
+    maxParts = parts.length;
+    for (; idxParts < maxParts; ++idxParts) {
         this.divErrorObj.appendChild(document.createTextNode(parts[idxParts]));
         if (idxParts + 1 < maxParts) {
             this.divErrorObj.appendChild(document.createElement("br"));
@@ -1054,7 +1220,7 @@ Uploader.prototype.showError = function(message) {
     this.divErrorObj.removeAttribute("hidden");
 };
 
-Uploader.prototype.hideError = function() {
+Uploader.prototype.hideError = function hideError() {
     if (this.divErrorObj === null) {
         return;
     }
@@ -1070,99 +1236,140 @@ Uploader.prototype.hideError = function() {
 // region Matrix Computing
 /* istanbul ignore next */
 /**
+ * Get Matrix.
  *
+ * @returns {DOMMatrix}
  */
 function getMatrix() {
+    var svg = null;
+
     if (typeof DOMMatrix === "function") {
         return new DOMMatrix();
     }
 
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     return svg.createSVGMatrix();
 }
 
 /* istanbul ignore next */
 /**
+ * Get Point.
  *
+ * @returns {DOMPoint}
  */
 function getPoint() {
+    var svg = null;
+
     if (typeof DOMPoint === "function") {
         return new DOMPoint();
     }
 
-    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     return svg.createSVGPoint();
 }
 
 /* istanbul ignore next */
 /**
+ * Track transforms.
  *
+ * @param {CanvasRenderingContext2D} ctx - canvas rendering context
+ * @returns {undefined}
  */
 function trackTransforms(ctx) {
     var xform = getMatrix();
+    var savedTransforms = [];
+    var save = ctx.save;
+    var restore = ctx.restore;
+    var scale = ctx.scale;
+    var rotate = ctx.rotate;
+    var translate = ctx.translate;
+    var transform = ctx.transform;
+    var setTransform = ctx.setTransform;
+    var pt = getPoint();
+
+    // eslint-disable-next-line func-names
     ctx.getTransform = function() {
         return xform;
     };
 
-    var savedTransforms = [];
-    var save = ctx.save;
+    // eslint-disable-next-line func-names
     ctx.save = function() {
         savedTransforms.push(xform.translate(0, 0));
+
         return save.call(ctx);
     };
 
-    var restore = ctx.restore;
+    // eslint-disable-next-line func-names
     ctx.restore = function() {
         xform = savedTransforms.pop();
+
         return restore.call(ctx);
     };
 
-    var scale = ctx.scale;
+    // eslint-disable-next-line func-names
     ctx.scale = function(sx, sy) {
         xform = xform.scale(sx, sy);
+
         return scale.call(ctx, sx, sy);
     };
 
-    var rotate = ctx.rotate;
+    // eslint-disable-next-line func-names
     ctx.rotate = function(radians) {
         xform = xform.rotate(radians * 180 / Math.PI);
+
         return rotate.call(ctx, radians);
     };
 
-    var translate = ctx.translate;
+    // eslint-disable-next-line func-names
     ctx.translate = function(dx, dy) {
         xform = xform.translate(dx, dy);
+
         return translate.call(ctx, dx, dy);
     };
 
-    var transform = ctx.transform;
+    // eslint-disable-next-line func-names,max-params,id-length
     ctx.transform = function(a, b, c, d, e, f) {
         var matrix2 = getMatrix();
+        // eslint-disable-next-line id-length
         matrix2.a = a;
+        // eslint-disable-next-line id-length
         matrix2.b = b;
+        // eslint-disable-next-line id-length
         matrix2.c = c;
+        // eslint-disable-next-line id-length
         matrix2.d = d;
+        // eslint-disable-next-line id-length
         matrix2.e = e;
+        // eslint-disable-next-line id-length
         matrix2.f = f;
         xform = xform.multiply(matrix2);
+
         return transform.call(ctx, a, b, c, d, e, f);
     };
 
-    var setTransform = ctx.setTransform;
+    // eslint-disable-next-line func-names,max-params,id-length
     ctx.setTransform = function(a, b, c, d, e, f) {
+        // eslint-disable-next-line id-length
         xform.a = a;
+        // eslint-disable-next-line id-length
         xform.b = b;
+        // eslint-disable-next-line id-length
         xform.c = c;
+        // eslint-disable-next-line id-length
         xform.d = d;
+        // eslint-disable-next-line id-length
         xform.e = e;
+        // eslint-disable-next-line id-length
         xform.f = f;
+
         return setTransform.call(ctx, a, b, c, d, e, f);
     };
 
-    var pt = getPoint();
+    // eslint-disable-next-line func-names
     ctx.transformedPoint = function(x, y) {
         pt.x = x;
         pt.y = y;
+
         return pt.matrixTransform(xform.inverse());
     };
 }

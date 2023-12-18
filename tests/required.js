@@ -359,6 +359,7 @@
             }
         }
 
+        // eslint-disable-next-line no-unused-vars
         inspect(depth, options) {
             if (depth < 0) {
                 return "[DOMMatrix]";

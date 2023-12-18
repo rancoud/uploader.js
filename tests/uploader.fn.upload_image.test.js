@@ -575,7 +575,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: verify canvas draw calls
-            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            //var drawCalls = uploader.canvasContext.__getDrawCalls();
             // ???
             /*expect(drawCalls).toStrictEqual([
                 window.canvasDrawCalls.clearRect,
@@ -770,7 +770,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: verify canvas draw calls
-            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            //var drawCalls = uploader.canvasContext.__getDrawCalls();
             //???
             /*expect(drawCalls).toStrictEqual([
                 window.canvasDrawCalls.clearRect,

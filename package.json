@@ -1,0 +1,38 @@
+{
+  "name": "uploader.js",
+  "version": "1.0.0",
+  "description": "JS Uploader",
+  "scripts": {
+    "test": "jest --coverage --coverageDirectory=./coverage -- tests/*.test.js",
+    "build": "node build.js && uglifyjs dist/uploader.js --mangle --webkit --compress \"drop_console=true,passes=5\" --comments \"/MIT License/\" -o dist/uploader.min.js && jest",
+    "jsdoc": "jsdoc -c jsdoc.conf.json",
+    "eslint": "eslint --max-warnings=0 src/*.js tests/*.js",
+    "eslint:fix": "eslint --fix src/*.js tests/*.js"
+  },
+  "author": "Rancoud",
+  "license": "MIT",
+  "homepage": "https://github.com/rancoud/uploader.js",
+  "devDependencies": {
+    "@babel/core": "^7.22.20",
+    "@types/jest": "^29.5.5",
+    "eslint": "^8.49.0",
+    "eslint-plugin-jest": "^27.4.0",
+    "eslint-plugin-jsdoc": "^46.8.1",
+    "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdoc": "^4.0.2",
+    "uglify-js": "^3.17.4"
+  },
+  "engines": {
+    "npm": ">=9.8.1",
+    "node": ">=20.6.1"
+  },
+  "jest": {
+    "setupFiles": ["jest-canvas-mock"],
+    "testEnvironment": "jsdom",
+    "testEnvironmentOptions": {
+      "resources": "usable"
+    }
+  }
+}

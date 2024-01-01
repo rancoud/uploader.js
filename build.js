@@ -4,6 +4,8 @@ const babel = require('@babel/core');
 
 // list of JS files to concat
 const inputJSFiles = [
+    path.join(__dirname, 'src/_types_.js'),
+    path.join(__dirname, 'src/helpers.js'),
     path.join(__dirname, 'src/uploader.js'),
 ];
 

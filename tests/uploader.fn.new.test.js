@@ -30,6 +30,7 @@ window.namespace.draw = function() {};
 describe("uploader", function(){
     beforeEach(function() {
         require("./required.js");
+        require("../src/helpers");
         require("../src/uploader");
     });
 

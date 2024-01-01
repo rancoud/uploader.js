@@ -14,6 +14,7 @@ window.saveUpdateFormData = function(instance, from, formData) { return formData
 describe("uploader", function(){
     beforeEach(function() {
         require("./required.js");
+        require("../src/helpers");
         require("../src/uploader");
     });
 

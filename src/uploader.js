@@ -1,55 +1,9 @@
-/* global Uint8Array */
+/* global dataURLtoBlob, getFunction, getHTMLElement, Position, pauseEvent, trackTransforms */
+/** @type string */
 var ZoomModeCenter = "center";
+
+/** @type string */
 var ZoomModePoint = "point";
-
-/**
- * Get HTML Element.
- *
- * @param {string} attributeName - attribute name
- * @param {string} elementID     - id
- * @returns {Error|HTMLElement}
- */
-function getHTMLElement(attributeName, elementID) {
-    /** @type HTMLElement */
-    var htmlElementObject = null;
-
-    if (typeof elementID !== "string") {
-        return new TypeError("Invalid attribute " + attributeName + ", expect string, get " + typeof elementID);
-    }
-
-    htmlElementObject = document.getElementById(elementID);
-    if (!htmlElementObject) {
-        return new Error("DOM element " + elementID + " not found");
-    }
-
-    return htmlElementObject;
-}
-
-/**
- * Get function.
- *
- * @param {string} fn - function to use, can be separated with '.'
- * @returns {Function|undefined}
- */
-function getFunction(fn) {
-    var scope = window;
-    var fnParts = fn.split(".");
-    var idxScopes = 0;
-    var maxFnParts = fnParts.length;
-    for (; idxScopes < maxFnParts - 1; idxScopes++) {
-        if (fnParts[idxScopes] === "window") {
-            continue;
-        }
-
-        scope = scope[fnParts[idxScopes]];
-
-        if (scope === undefined) {
-            return;
-        }
-    }
-
-    return scope[fnParts[fnParts.length - 1]];
-}
 
 /**
  * Uploader.
@@ -688,7 +642,7 @@ Uploader.prototype.save = function save() {
     this.canSave = false;
 
     dataURL = this.getCanvasDataURL();
-    blob = dataURItoBlob(dataURL);
+    blob = dataURLtoBlob(dataURL);
     formData = new FormData();
 
     formData.append(this.uploadPrefix + this.uploadName, blob);
@@ -732,46 +686,6 @@ Uploader.prototype.saveOnError = function saveOnError(error) {
         this.callbacks.save.error(this, "saveOnError", error);
     }
 };
-
-/**
- * Convert DataURI to Blob.
- *
- * @param {string} dataURI - data from canvas
- * @returns {Blob}
- */
-function dataURItoBlob(dataURI) {
-    /** @type string */
-    var byteString = "";
-
-    /** @type string */
-    var mimeString = "";
-
-    /** @type Uint8Array */
-    var uInt8Array = null;
-
-    /** @type Number */
-    var idxArray = 0;
-
-    /** @type Number */
-    var lenArray = 0;
-
-    /* istanbul ignore else */
-    if (dataURI.split(",")[0].indexOf("base64") >= 0) {
-        byteString = atob(dataURI.split(",")[1]);
-    } else {
-        byteString = decodeURI(dataURI.split(",")[1]);
-    }
-
-    mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-    uInt8Array = new Uint8Array(byteString.length);
-    lenArray = byteString.length;
-    for (; idxArray < lenArray; ++idxArray) {
-        uInt8Array[idxArray] = byteString.charCodeAt(idxArray);
-    }
-
-    return new Blob([uInt8Array], {type: mimeString});
-}
 // endregion
 
 // region Draw
@@ -779,6 +693,7 @@ Uploader.prototype.computeSize = function computeSize() {
     /** @type number */
     var ratio = 0;
 
+    /** @type Mask */
     var mask = {
         x: 0,
         y: 0,
@@ -830,8 +745,12 @@ Uploader.prototype.draw = function draw() {
 };
 
 Uploader.prototype.clearCanvas = function clearCanvas() {
+    /** @type DOMPoint */
     var p1 = this.canvasContext.transformedPoint(0, 0);
+
+    /** @type DOMPoint */
     var p2 = this.canvasContext.transformedPoint(this.canvasObj.width, this.canvasObj.height);
+
     /* eslint-disable-next-line no-extra-parens */
     this.canvasContext.clearRect(p1.x, p1.y, (p2.x - p1.x), (p2.y - p1.y));
 };
@@ -841,11 +760,20 @@ Uploader.prototype.drawImage = function drawImage() {
 };
 
 Uploader.prototype.drawMask = function drawMask() {
+    /** @type number */
     var x = 0;
+
+    /** @type number */
     var y = 0;
+
+    /** @type number */
     var width = 0;
+
+    /** @type number */
     var height = 0;
-    var radius = null;
+
+    /** @type MaskRadius */
+    var radius = {};
 
     if (this.mask === null) {
         return;
@@ -926,7 +854,10 @@ Uploader.prototype.moveStart = function moveStart(event) {
 };
 
 Uploader.prototype.moveMove = function moveMove(event) {
+    /** @type number */
     var scale = 0;
+
+    /** @type Position */
     var translation = {};
 
     if (!this.dragStart) {
@@ -963,6 +894,7 @@ Uploader.prototype.moveMove = function moveMove(event) {
 };
 
 Uploader.prototype.moveEnd = function moveEnd() {
+    /** @type Position */
     var translation = {};
 
     this.dragStart = null;
@@ -978,6 +910,12 @@ Uploader.prototype.moveEnd = function moveEnd() {
     }
 };
 
+/**
+ * Keep image inside Mask Boundings.
+ *
+ * @param {Position} translation - position
+ * @returns {Position}
+ */
 Uploader.prototype.keepImgInsideMaskBoundings = function keepImgInsideMaskBoundings(translation) {
     if (this.mask === null || this.mask.constraint === false) {
         return translation;
@@ -1020,35 +958,20 @@ Uploader.prototype.keepImgInsideMaskBoundings = function keepImgInsideMaskBoundi
 
     return translation;
 };
-
-// Useful for disabling the selection with the mouse
-/**
- * Pause Event.
- *
- * @param {Event} event - event
- * @returns {boolean}
- */
-function pauseEvent(event) {
-    if (event.stopPropagation) {
-        event.stopPropagation();
-    }
-
-    if (event.preventDefault) {
-        event.preventDefault();
-    }
-
-    event.cancelBubble = true;
-    event.returnValue = false;
-
-    return false;
-}
 // endregion
 
 // region Zoom
 Uploader.prototype.updateZoomFromInput = function updateZoomFromInput(event) {
-    var middleCanvasPoint = {};
+    /** @type DOMPoint */
+    var middleCanvasPoint = null;
+
+    /** @type number */
     var delta = 0;
+
+    /** @type number */
     var factor = 0;
+
+    /** @type Position */
     var translation = {};
 
     if (this.img === null) {
@@ -1134,7 +1057,11 @@ Uploader.prototype.zoomOut = function zoomOut(zoomMode) {
 Uploader.prototype.zoom = function zoom(exponent, zoomMode) {
     /** @type DOMPoint */
     var pt = null;
+
+    /** @type number */
     var factor = 0;
+
+    /** @type Position */
     var translation = {};
 
     if (zoomMode === ZoomModeCenter) {
@@ -1156,8 +1083,13 @@ Uploader.prototype.zoom = function zoom(exponent, zoomMode) {
 };
 
 Uploader.prototype.handleScroll = function handleScroll(event) {
+    /** @type number */
     var oldX = this.lastX;
+
+    /** @type number */
     var oldY = this.lastY;
+
+    /** @type number */
     var wheelDirection = 0;
 
     /* eslint-disable-next-line no-extra-parens */
@@ -1196,8 +1128,13 @@ Uploader.prototype.handleScroll = function handleScroll(event) {
 
 // region Error
 Uploader.prototype.showError = function showError(message) {
+    /** @type string[] */
     var parts = [];
+
+    /** @type number */
     var idxParts = 0;
+
+    /** @type number */
     var maxParts = 0;
 
     if (this.divErrorObj === null) {
@@ -1231,148 +1168,6 @@ Uploader.prototype.hideError = function hideError() {
         this.divErrorObj.lastChild.remove();
     }
 };
-// endregion
-
-// region Matrix Computing
-/* istanbul ignore next */
-/**
- * Get Matrix.
- *
- * @returns {DOMMatrix}
- */
-function getMatrix() {
-    var svg = null;
-
-    if (typeof DOMMatrix === "function") {
-        return new DOMMatrix();
-    }
-
-    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    return svg.createSVGMatrix();
-}
-
-/* istanbul ignore next */
-/**
- * Get Point.
- *
- * @returns {DOMPoint}
- */
-function getPoint() {
-    var svg = null;
-
-    if (typeof DOMPoint === "function") {
-        return new DOMPoint();
-    }
-
-    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    return svg.createSVGPoint();
-}
-
-/* istanbul ignore next */
-/**
- * Track transforms.
- *
- * @param {CanvasRenderingContext2D} ctx - canvas rendering context
- * @returns {undefined}
- */
-function trackTransforms(ctx) {
-    var xform = getMatrix();
-    var savedTransforms = [];
-    var save = ctx.save;
-    var restore = ctx.restore;
-    var scale = ctx.scale;
-    var rotate = ctx.rotate;
-    var translate = ctx.translate;
-    var transform = ctx.transform;
-    var setTransform = ctx.setTransform;
-    var pt = getPoint();
-
-    // eslint-disable-next-line func-names
-    ctx.getTransform = function() {
-        return xform;
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.save = function() {
-        savedTransforms.push(xform.translate(0, 0));
-
-        return save.call(ctx);
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.restore = function() {
-        xform = savedTransforms.pop();
-
-        return restore.call(ctx);
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.scale = function(sx, sy) {
-        xform = xform.scale(sx, sy);
-
-        return scale.call(ctx, sx, sy);
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.rotate = function(radians) {
-        xform = xform.rotate(radians * 180 / Math.PI);
-
-        return rotate.call(ctx, radians);
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.translate = function(dx, dy) {
-        xform = xform.translate(dx, dy);
-
-        return translate.call(ctx, dx, dy);
-    };
-
-    // eslint-disable-next-line func-names,max-params,id-length
-    ctx.transform = function(a, b, c, d, e, f) {
-        var matrix2 = getMatrix();
-        // eslint-disable-next-line id-length
-        matrix2.a = a;
-        // eslint-disable-next-line id-length
-        matrix2.b = b;
-        // eslint-disable-next-line id-length
-        matrix2.c = c;
-        // eslint-disable-next-line id-length
-        matrix2.d = d;
-        // eslint-disable-next-line id-length
-        matrix2.e = e;
-        // eslint-disable-next-line id-length
-        matrix2.f = f;
-        xform = xform.multiply(matrix2);
-
-        return transform.call(ctx, a, b, c, d, e, f);
-    };
-
-    // eslint-disable-next-line func-names,max-params,id-length
-    ctx.setTransform = function(a, b, c, d, e, f) {
-        // eslint-disable-next-line id-length
-        xform.a = a;
-        // eslint-disable-next-line id-length
-        xform.b = b;
-        // eslint-disable-next-line id-length
-        xform.c = c;
-        // eslint-disable-next-line id-length
-        xform.d = d;
-        // eslint-disable-next-line id-length
-        xform.e = e;
-        // eslint-disable-next-line id-length
-        xform.f = f;
-
-        return setTransform.call(ctx, a, b, c, d, e, f);
-    };
-
-    // eslint-disable-next-line func-names
-    ctx.transformedPoint = function(x, y) {
-        pt.x = x;
-        pt.y = y;
-
-        return pt.matrixTransform(xform.inverse());
-    };
-}
 // endregion
 
 window.Uploader = Uploader;

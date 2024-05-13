@@ -1,20 +1,23 @@
-/* global dataURLtoBlob, getFunction, getHTMLElement, Position, pauseEvent, trackTransforms */
-/** @type string */
+/* global Mask, MaskRadius, Position */
+/* global dataURLtoBlob, getFunction, getHTMLElement, pauseEvent, trackTransforms */
+/* eslint-disable max-lines */
+/** @type {string} */
 var ZoomModeCenter = "center";
-
-/** @type string */
+/** @type {string} */
 var ZoomModePoint = "point";
+/** @type {number} */
+var DefaultZoomStep = 1.05;
 
 /**
  * Uploader.
  *
  * @class Uploader
  * @param {HTMLElement} rootDom - rootDom
- * @returns {Error|undefined}
+ * @returns {(Error|undefined)}
  */
 function Uploader(rootDom) {
-    /** @type Error */
-    var err = null;
+    /** @type {Error} */
+    var err;
 
     this.initAttributes();
 
@@ -117,11 +120,10 @@ Uploader.prototype.initAttributes = function initAttributes() {
 };
 
 Uploader.prototype.verifyMandatoryDataAttributes = function verifyMandatoryDataAttributes(masterDom) {
-    /** @type string */
-    var inputFileID = "";
-
-    /** @type string */
-    var canvasID = "";
+    /** @type {(string|null)} */
+    var inputFileID;
+    /** @type {(string|null)} */
+    var canvasID;
 
     inputFileID = masterDom.getAttribute("data-uploader-input_file-id");
     this.inputFileObj = getHTMLElement("data-uploader-input_file-id", inputFileID);
@@ -138,63 +140,46 @@ Uploader.prototype.verifyMandatoryDataAttributes = function verifyMandatoryDataA
     return null;
 };
 
+/* eslint-disable max-lines-per-function,max-statements,complexity */
 Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAttributes(masterDom) {
-    /** @type {string|null} */
-    var divErrorID = null;
-
-    /** @type {string|null} */
-    var divUploadID = null;
-
-    /** @type {string|null} */
-    var divPreviewID = null;
-
-    /** @type string */
-    var maskSize = "";
-
-    /** @type number */
-    var maskSizeWidth = 0;
-
-    /** @type number */
-    var maskSizeHeight = 0;
-
-    /** @type string[] */
-    var maskSizeParts = [];
-
-    /** @type string */
-    var maskColor = "";
-
-    /** @type string */
-    var maskRadius = "";
-
-    /** @type number */
-    var minMaskSize = 0;
-
-    /** @type string */
-    var maskConstraint = "";
-
-    /** @type string */
-    var inputZoomID = "";
-
-    /** @type Error */
-    var errorCallbacks = null;
-
-    /** @type string */
-    var btnSaveID = "";
-
-    /** @type string */
-    var btnCancelID = "";
-
-    /** @type string */
-    var errorLoadMessage = "";
-
-    /** @type string */
-    var errorUploadMessage = "";
-
-    /** @type {string|number} */
-    var scaleFactor = "";
-
-    /** @type string */
-    var cssClassCanvasMoving = "";
+    /** @type {(string|null)} */
+    var divErrorID;
+    /** @type {(string|null)} */
+    var divUploadID;
+    /** @type {(string|null)} */
+    var divPreviewID;
+    /** @type {(string|null)} */
+    var maskSize;
+    /** @type {number} */
+    var maskSizeWidth;
+    /** @type {number} */
+    var maskSizeHeight;
+    /** @type {string[]} */
+    var maskSizeParts;
+    /** @type {string} */
+    var maskColor;
+    /** @type {string} */
+    var maskRadius;
+    /** @type {number} */
+    var minMaskSize;
+    /** @type {string} */
+    var maskConstraint;
+    /** @type {string} */
+    var inputZoomID;
+    /** @type {Error} */
+    var errorCallbacks;
+    /** @type {string} */
+    var btnSaveID;
+    /** @type {string} */
+    var btnCancelID;
+    /** @type {string} */
+    var errorLoadMessage;
+    /** @type {string} */
+    var errorUploadMessage;
+    /** @type {(string|number)} */
+    var scaleFactor;
+    /** @type {string} */
+    var cssClassCanvasMoving;
 
     // region divs
     divErrorID = masterDom.getAttribute("data-uploader-div_error-id") || null;
@@ -272,7 +257,6 @@ Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAtt
         if (this.maskRaw.radius > 0) {
             minMaskSize = Math.min(this.maskRaw.size.width, this.maskRaw.size.height);
             if (this.maskRaw.radius > minMaskSize) {
-                /* eslint-disable-next-line no-extra-parens */
                 this.maskRaw.radius = (minMaskSize / 2) >> 0;
             }
         }
@@ -314,20 +298,27 @@ Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAtt
      * @returns {Error|null}
      */
     function parseCallbacks(instance, callbacks, parentKey) {
-        var err = null;
-        var key = null;
-        var localKey = [];
-        var idxParentKey = 0;
+        /** @type {(Error|null)} */
+        var err;
+        /** @type {string} */
+        var key;
+        /** @type {string[]} */
+        var localKey;
+        /** @type {number} */
+        var idxParentKey;
+        /** @type {number} */
         var lenParentKey = parentKey.length;
-        var callbackName = "";
-        var callbackFunction = null;
+        /** @type {(string|null)} */
+        var callbackName;
+        /** @type {(Function|undefined)} */
+        var callbackFunction;
 
         for (key in callbacks) {
             /* istanbul ignore else */
             // eslint-disable-next-line no-prototype-builtins
             if (callbacks.hasOwnProperty(key)) {
                 localKey = [];
-                for (idxParentKey = 0; idxParentKey < lenParentKey; idxParentKey++) {
+                for (idxParentKey = 0; idxParentKey < lenParentKey; ++idxParentKey) {
                     localKey[idxParentKey] = parentKey;
                 }
                 localKey.push(key);
@@ -397,11 +388,11 @@ Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAtt
     // endregion
 
     // region scale factor
-    scaleFactor = masterDom.getAttribute("data-uploader-scale_factor") || 1.05;
-    if (scaleFactor !== 1.05) {
+    scaleFactor = masterDom.getAttribute("data-uploader-scale_factor") || DefaultZoomStep;
+    if (scaleFactor !== DefaultZoomStep) {
         scaleFactor = parseFloat(scaleFactor);
         if (scaleFactor === 0 || Number.isNaN(scaleFactor)) {
-            scaleFactor = 1.05;
+            scaleFactor = DefaultZoomStep;
         }
     }
     this.scaleFactor = scaleFactor;
@@ -463,9 +454,7 @@ Uploader.prototype.initMask = function initMask() {
     }
 
     this.mask = {
-        /* eslint-disable-next-line no-extra-parens */
         x: (this.canvasObj.width / 2) - (this.maskRaw.size.width / 2),
-        /* eslint-disable-next-line no-extra-parens */
         y: (this.canvasObj.height / 2) - (this.maskRaw.size.height / 2),
         width: this.maskRaw.size.width,
         height: this.maskRaw.size.height,
@@ -624,16 +613,13 @@ Uploader.prototype.cancel = function cancel() {
 
 Uploader.prototype.save = function save() {
     /** @type {string} */
-    var dataURL = "";
-
-    /** @type Blob */
-    var blob = null;
-
-    /** @type FormData */
-    var formData = null;
-
-    /** @type XMLHttpRequest */
-    var XHR = null;
+    var dataURL;
+    /** @type {Blob} */
+    var blob;
+    /** @type {FormData} */
+    var formData;
+    /** @type {XMLHttpRequest} */
+    var XHR;
 
     if (this.img === null || this.canSave === false) {
         return;
@@ -690,10 +676,9 @@ Uploader.prototype.saveOnError = function saveOnError(error) {
 
 // region Draw
 Uploader.prototype.computeSize = function computeSize() {
-    /** @type number */
-    var ratio = 0;
-
-    /** @type Mask */
+    /** @type {number} */
+    var ratio;
+    /** @type {Mask} */
     var mask = {
         x: 0,
         y: 0,
@@ -719,9 +704,7 @@ Uploader.prototype.computeSize = function computeSize() {
 
     this.imgSizeComputed.height = this.img.height * ratio;
     this.imgSizeComputed.width = this.img.width * ratio;
-    /* eslint-disable-next-line no-extra-parens */
     this.imgSizeComputed.x = mask.x - ((this.imgSizeComputed.width / 2) - (mask.width / 2));
-    /* eslint-disable-next-line no-extra-parens */
     this.imgSizeComputed.y = mask.y - ((this.imgSizeComputed.height / 2) - (mask.height / 2));
 
     return this.imgSizeComputed;
@@ -745,13 +728,11 @@ Uploader.prototype.draw = function draw() {
 };
 
 Uploader.prototype.clearCanvas = function clearCanvas() {
-    /** @type DOMPoint */
+    /** @type {DOMPoint} */
     var p1 = this.canvasContext.transformedPoint(0, 0);
-
-    /** @type DOMPoint */
+    /** @type {DOMPoint} */
     var p2 = this.canvasContext.transformedPoint(this.canvasObj.width, this.canvasObj.height);
 
-    /* eslint-disable-next-line no-extra-parens */
     this.canvasContext.clearRect(p1.x, p1.y, (p2.x - p1.x), (p2.y - p1.y));
 };
 
@@ -760,20 +741,16 @@ Uploader.prototype.drawImage = function drawImage() {
 };
 
 Uploader.prototype.drawMask = function drawMask() {
-    /** @type number */
-    var x = 0;
-
-    /** @type number */
-    var y = 0;
-
-    /** @type number */
-    var width = 0;
-
-    /** @type number */
-    var height = 0;
-
-    /** @type MaskRadius */
-    var radius = {};
+    /** @type {number} */
+    var x;
+    /** @type {number} */
+    var y;
+    /** @type {number} */
+    var width;
+    /** @type {number} */
+    var height;
+    /** @type {MaskRadius} */
+    var radius;
 
     if (this.mask === null) {
         return;
@@ -812,8 +789,8 @@ Uploader.prototype.drawMask = function drawMask() {
 };
 
 Uploader.prototype.getCanvasDataURL = function getCanvasDataURL() {
-    /** @type string */
-    var dataURL = "";
+    /** @type {string} */
+    var dataURL;
 
     if (this.mask === null) {
         return this.canvasObj.toDataURL();
@@ -854,11 +831,10 @@ Uploader.prototype.moveStart = function moveStart(event) {
 };
 
 Uploader.prototype.moveMove = function moveMove(event) {
-    /** @type number */
-    var scale = 0;
-
-    /** @type Position */
-    var translation = {};
+    /** @type {number} */
+    var scale;
+    /** @type {Position} */
+    var translation;
 
     if (!this.dragStart) {
         return;
@@ -894,8 +870,8 @@ Uploader.prototype.moveMove = function moveMove(event) {
 };
 
 Uploader.prototype.moveEnd = function moveEnd() {
-    /** @type Position */
-    var translation = {};
+    /** @type {Position} */
+    var translation;
 
     this.dragStart = null;
     if (this.cssClassCanvasMoving !== "") {
@@ -937,19 +913,16 @@ Uploader.prototype.keepImgInsideMaskBoundings = function keepImgInsideMaskBoundi
         }
     }
 
-    /* eslint-disable-next-line no-extra-parens */
     if (this.ptBottomRightMask.x > (this.imgSizeComputed.x + this.imgSizeComputed.width)) {
         translation.x = this.ptBottomRightMask.x - (this.imgSizeComputed.x + this.imgSizeComputed.width);
-        /* eslint-disable-next-line no-extra-parens */
     } else if (this.ptBottomRightMask.x === (this.imgSizeComputed.x + this.imgSizeComputed.width)) {
         if (translation.x < 0) {
             translation.x = 0;
         }
     }
-    /* eslint-disable-next-line no-extra-parens */
+
     if (this.ptBottomRightMask.y > (this.imgSizeComputed.y + this.imgSizeComputed.height)) {
         translation.y = this.ptBottomRightMask.y - (this.imgSizeComputed.y + this.imgSizeComputed.height);
-        /* eslint-disable-next-line no-extra-parens */
     } else if (this.ptBottomRightMask.y === (this.imgSizeComputed.y + this.imgSizeComputed.height)) {
         if (translation.y < 0) {
             translation.y = 0;
@@ -962,20 +935,17 @@ Uploader.prototype.keepImgInsideMaskBoundings = function keepImgInsideMaskBoundi
 
 // region Zoom
 Uploader.prototype.updateZoomFromInput = function updateZoomFromInput(event) {
-    /** @type DOMPoint */
-    var middleCanvasPoint = null;
-
-    /** @type number */
-    var delta = 0;
-
-    /** @type number */
-    var factor = 0;
-
-    /** @type Position */
-    var translation = {};
+    /** @type {DOMPoint} */
+    var middleCanvasPoint;
+    /** @type {number} */
+    var delta;
+    /** @type {number} */
+    var factor;
+    /** @type {Position} */
+    var translation;
 
     if (this.img === null) {
-        return;
+        return undefined;
     }
 
     if (this.inProgress) {
@@ -1000,11 +970,11 @@ Uploader.prototype.updateZoomFromInput = function updateZoomFromInput(event) {
                 break;
             }
 
-            this.zoomCurrent -= 1;
-            delta -= 1;
+            this.zoomCurrent = this.zoomCurrent - 1;
+            delta = delta - 1;
         } else {
-            this.zoomCurrent += 1;
-            delta += 1;
+            this.zoomCurrent = this.zoomCurrent + 1;
+            delta = delta + 1;
         }
 
         this.canvasContext.translate(middleCanvasPoint.x, middleCanvasPoint.y);
@@ -1021,6 +991,8 @@ Uploader.prototype.updateZoomFromInput = function updateZoomFromInput(event) {
     }
 
     this.inProgress = false;
+
+    return undefined;
 };
 
 Uploader.prototype.inputInputZoomListener = function inputInputZoomListener(event) {
@@ -1041,7 +1013,7 @@ Uploader.prototype.changeInputZoomListener = function changeInputZoomListener(ev
 };
 
 Uploader.prototype.zoomIn = function zoomIn(zoomMode) {
-    this.zoomCurrent += 1;
+    this.zoomCurrent = this.zoomCurrent + 1;
     this.zoom(1, zoomMode);
 };
 
@@ -1050,19 +1022,17 @@ Uploader.prototype.zoomOut = function zoomOut(zoomMode) {
         return;
     }
 
-    this.zoomCurrent -= 1;
+    this.zoomCurrent = this.zoomCurrent - 1;
     this.zoom(-1, zoomMode);
 };
 
 Uploader.prototype.zoom = function zoom(exponent, zoomMode) {
-    /** @type DOMPoint */
-    var pt = null;
-
-    /** @type number */
-    var factor = 0;
-
-    /** @type Position */
-    var translation = {};
+    /** @type {DOMPoint} */
+    var pt;
+    /** @type {number} */
+    var factor;
+    /** @type {Position} */
+    var translation;
 
     if (zoomMode === ZoomModeCenter) {
         pt = this.canvasContext.transformedPoint(this.canvasObj.width / 2, this.canvasObj.height / 2);
@@ -1083,18 +1053,14 @@ Uploader.prototype.zoom = function zoom(exponent, zoomMode) {
 };
 
 Uploader.prototype.handleScroll = function handleScroll(event) {
-    /** @type number */
+    /** @type {number} */
     var oldX = this.lastX;
-
-    /** @type number */
+    /** @type {number} */
     var oldY = this.lastY;
+    /** @type {number} */
+    var wheelDirection;
 
-    /** @type number */
-    var wheelDirection = 0;
-
-    /* eslint-disable-next-line no-extra-parens */
     this.lastX = event.offsetX || (event.pageX - this.canvasObj.offsetLeft);
-    /* eslint-disable-next-line no-extra-parens */
     this.lastY = event.offsetY || (event.pageY - this.canvasObj.offsetTop);
 
     wheelDirection = 1;
@@ -1128,14 +1094,12 @@ Uploader.prototype.handleScroll = function handleScroll(event) {
 
 // region Error
 Uploader.prototype.showError = function showError(message) {
-    /** @type string[] */
-    var parts = [];
-
-    /** @type number */
+    /** @type {string[]} */
+    var parts;
+    /** @type {number} */
     var idxParts = 0;
-
-    /** @type number */
-    var maxParts = 0;
+    /** @type {number} */
+    var maxParts;
 
     if (this.divErrorObj === null) {
         return;

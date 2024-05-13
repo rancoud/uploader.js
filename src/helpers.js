@@ -4,11 +4,11 @@
  *
  * @param {string} attributeName - attribute name
  * @param {string} elementID     - id
- * @returns {Error|HTMLElement}
+ * @returns {(TypeError|Error|HTMLElement)}
  */
 function getHTMLElement(attributeName, elementID) {
-    /** @type HTMLElement */
-    var htmlElementObject = null;
+    /** @type {(HTMLElement|null)} */
+    var htmlElementObject;
 
     if (typeof elementID !== "string") {
         return new TypeError("Invalid attribute " + attributeName + ", expect string, get " + typeof elementID);
@@ -26,18 +26,15 @@ function getHTMLElement(attributeName, elementID) {
  * Get function.
  *
  * @param {string} fn - function to use, can be separated with '.'
- * @returns {Function|undefined}
+ * @returns {(Function|undefined)}
  */
 function getFunction(fn) {
     /** @type Window */
     var scope = window;
-
     /** @type string[] */
     var fnParts = fn.split(".");
-
     /** @type number */
     var idxScopes = 0;
-
     /** @type number */
     var maxFnParts = fnParts.length;
 
@@ -49,7 +46,7 @@ function getFunction(fn) {
         scope = scope[fnParts[idxScopes]];
 
         if (scope === undefined) {
-            return;
+            return undefined;
         }
     }
 
@@ -64,19 +61,15 @@ function getFunction(fn) {
  */
 function dataURLtoBlob(dataURL) {
     /** @type string */
-    var byteString = "";
-
+    var byteString;
     /** @type string */
-    var mimeString = "";
-
+    var mimeString;
     /** @type Uint8Array */
-    var uInt8Array = null;
-
+    var uInt8Array;
     /** @type number */
     var idxArray = 0;
-
     /** @type number */
-    var lenArray = 0;
+    var lenArray;
 
     /* istanbul ignore else */
     if (dataURL.split(",")[0].indexOf("base64") >= 0) {
@@ -125,7 +118,8 @@ function pauseEvent(event) {
  * @returns {DOMMatrix}
  */
 function getMatrix() {
-    var svg = null;
+    /** @type {SVGSVGElement} */
+    var svg;
 
     if (typeof DOMMatrix === "function") {
         return new DOMMatrix();
@@ -143,7 +137,8 @@ function getMatrix() {
  * @returns {DOMPoint}
  */
 function getPoint() {
-    var svg = null;
+    /** @type {SVGSVGElement} */
+    var svg;
 
     if (typeof DOMPoint === "function") {
         return new DOMPoint();
@@ -201,6 +196,7 @@ function trackTransforms(ctx) {
 
     // eslint-disable-next-line func-names
     ctx.rotate = function(radians) {
+        // eslint-disable-next-line no-magic-numbers
         xform = xform.rotate(radians * 180 / Math.PI);
 
         return rotate.call(ctx, radians);
@@ -261,8 +257,8 @@ function trackTransforms(ctx) {
 }
 // endregion
 
-window.getHTMLElement = getHTMLElement; /* BUILD REMOVE LINE */
-window.getFunction = getFunction; /* BUILD REMOVE LINE */
-window.dataURLtoBlob = dataURLtoBlob; /* BUILD REMOVE LINE */
-window.pauseEvent = pauseEvent; /* BUILD REMOVE LINE */
-window.trackTransforms = trackTransforms; /* BUILD REMOVE LINE */
+window.getHTMLElement = getHTMLElement; // BUILD REMOVE LINE
+window.getFunction = getFunction; // BUILD REMOVE LINE
+window.dataURLtoBlob = dataURLtoBlob; // BUILD REMOVE LINE
+window.pauseEvent = pauseEvent; // BUILD REMOVE LINE
+window.trackTransforms = trackTransforms; // BUILD REMOVE LINE

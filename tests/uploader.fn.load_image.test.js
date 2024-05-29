@@ -1,4 +1,5 @@
 /* global Uploader */
+/* eslint-disable stylistic/indent, stylistic/spaced-comment */
 window.zoomUpdate = function() {};
 window.imageSuccess = function() {};
 window.imageError = function() {};
@@ -20,7 +21,7 @@ window.namespace.draw = function() {};
  * Uploader.hideError
  * Uploader.showError
  */
-describe("uploader", function(){
+describe("uploader", function() {
     beforeEach(function() {
         require("./required.js");
         require("../src/helpers");
@@ -40,42 +41,44 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderTreatImage = jest.spyOn(Uploader.prototype, 'treatImage');
-        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, 'treatImageOnLoad');
-        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, 'treatImageOnError');
-        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, 'removeEventListeners');
-        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, 'addEventListeners');
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderComputeSize = jest.spyOn(Uploader.prototype, 'computeSize');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderTreatImage = jest.spyOn(Uploader.prototype, "treatImage");
+        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, "treatImageOnLoad");
+        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, "treatImageOnError");
+        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, "removeEventListeners");
+        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, "addEventListeners");
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderComputeSize = jest.spyOn(Uploader.prototype, "computeSize");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var canvasAddEventListener = jest.spyOn(document.getElementById('canvas'), 'addEventListener');
-        var windowAddEventListener = jest.spyOn(window, 'addEventListener');
-        var canvasRemoveEventListener = jest.spyOn(document.getElementById('canvas'), 'removeEventListener');
-        var windowRemoveEventListener = jest.spyOn(window, 'removeEventListener');
+        var canvasAddEventListener = jest.spyOn(document.getElementById("canvas"), "addEventListener");
+        var windowAddEventListener = jest.spyOn(window, "addEventListener");
+        var canvasRemoveEventListener = jest.spyOn(document.getElementById("canvas"), "removeEventListener");
+        var windowRemoveEventListener = jest.spyOn(window, "removeEventListener");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
         // endregion
 
         // region Setup: input file + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);
@@ -88,8 +91,8 @@ describe("uploader", function(){
         fileReaderReadAsDataURL.mockClear();
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
         // endregion
 
@@ -125,17 +128,17 @@ describe("uploader", function(){
             uploaderRemoveEventListeners.mockClear();
 
             expect(canvasRemoveEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener);
             canvasRemoveEventListener.mockClear();
 
             expect(windowRemoveEventListener).toHaveBeenCalledTimes(2);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener);
             windowRemoveEventListener.mockClear();
             // endregion
 
@@ -144,17 +147,17 @@ describe("uploader", function(){
             uploaderAddEventListeners.mockClear();
 
             expect(canvasAddEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener, {"passive": false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener, {passive: false});
             canvasAddEventListener.mockClear();
 
             expect(windowAddEventListener).toHaveBeenCalledTimes(2);
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener, {"passive": false});
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener, {"passive": false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener, {passive: false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener, {passive: false});
             windowAddEventListener.mockClear();
             // endregion
 
@@ -163,7 +166,7 @@ describe("uploader", function(){
             // region Test: call Uploader.computeSize
             expect(uploaderComputeSize).toHaveBeenCalledTimes(1);
             uploaderComputeSize.mockClear();
-            expect(uploader.imgSizeComputed).toStrictEqual({"height": 100, "width": 100, "x": 0, "y": 0});
+            expect(uploader.imgSizeComputed).toStrictEqual({height: 100, width: 100, x: 0, y: 0});
             // endregion
 
             // region Test: call Uploader.draw
@@ -197,8 +200,8 @@ describe("uploader", function(){
             ]);
             uploader.canvasContext.__clearDrawCalls();
 
-            expect(uploader.ptTopLeftMask).toStrictEqual({"x": 0, "y": 0});
-            expect(uploader.ptBottomRightMask).toStrictEqual({"x": 0, "y": 0});
+            expect(uploader.ptTopLeftMask).toStrictEqual({x: 0, y: 0});
+            expect(uploader.ptBottomRightMask).toStrictEqual({x: 0, y: 0});
             // endregion
 
             // region Test: call Uploader.hideError
@@ -238,52 +241,54 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderTreatImage = jest.spyOn(Uploader.prototype, 'treatImage');
-        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, 'treatImageOnLoad');
-        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, 'treatImageOnError');
-        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, 'removeEventListeners');
-        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, 'addEventListeners');
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderComputeSize = jest.spyOn(Uploader.prototype, 'computeSize');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderTreatImage = jest.spyOn(Uploader.prototype, "treatImage");
+        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, "treatImageOnLoad");
+        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, "treatImageOnError");
+        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, "removeEventListeners");
+        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, "addEventListeners");
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderComputeSize = jest.spyOn(Uploader.prototype, "computeSize");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var canvasAddEventListener = jest.spyOn(document.getElementById('canvas'), 'addEventListener');
-        var windowAddEventListener = jest.spyOn(window, 'addEventListener');
-        var canvasRemoveEventListener = jest.spyOn(document.getElementById('canvas'), 'removeEventListener');
-        var windowRemoveEventListener = jest.spyOn(window, 'removeEventListener');
+        var canvasAddEventListener = jest.spyOn(document.getElementById("canvas"), "addEventListener");
+        var windowAddEventListener = jest.spyOn(window, "addEventListener");
+        var canvasRemoveEventListener = jest.spyOn(document.getElementById("canvas"), "removeEventListener");
+        var windowRemoveEventListener = jest.spyOn(window, "removeEventListener");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
 
-        var callbackZoomUpdate = jest.spyOn(window, 'zoomUpdate');
-        var callbackImageSuccess = jest.spyOn(window, 'imageSuccess');
-        var callbackImageError = jest.spyOn(window, 'imageError');
-        var callbackDraw = jest.spyOn(window.namespace, 'draw');
+        var callbackZoomUpdate = jest.spyOn(window, "zoomUpdate");
+        var callbackImageSuccess = jest.spyOn(window, "imageSuccess");
+        var callbackImageError = jest.spyOn(window, "imageError");
+        var callbackDraw = jest.spyOn(window.namespace, "draw");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputZoom = document.getElementById("input_zoom");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divUpload = document.getElementById("div_upload");
         var divPreview = document.getElementById("div_preview");
         var divError = document.getElementById("div_error");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);
@@ -296,8 +301,8 @@ describe("uploader", function(){
         fileReaderReadAsDataURL.mockClear();
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
         // endregion
 
@@ -336,17 +341,17 @@ describe("uploader", function(){
             uploaderRemoveEventListeners.mockClear();
 
             expect(canvasRemoveEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener);
             canvasRemoveEventListener.mockClear();
 
             expect(windowRemoveEventListener).toHaveBeenCalledTimes(2);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener);
             windowRemoveEventListener.mockClear();
             // endregion
 
@@ -355,17 +360,17 @@ describe("uploader", function(){
             uploaderAddEventListeners.mockClear();
 
             expect(canvasAddEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener, {"passive": false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener, {passive: false});
             canvasAddEventListener.mockClear();
 
             expect(windowAddEventListener).toHaveBeenCalledTimes(2);
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener, {"passive": false});
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener, {"passive": false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener, {passive: false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener, {passive: false});
             windowAddEventListener.mockClear();
             // endregion
 
@@ -375,7 +380,7 @@ describe("uploader", function(){
             // region Test: call Uploader.computeSize
             expect(uploaderComputeSize).toHaveBeenCalledTimes(1);
             uploaderComputeSize.mockClear();
-            expect(uploader.imgSizeComputed).toStrictEqual({"height": 100, "width": 100, "x": 0, "y": 0});
+            expect(uploader.imgSizeComputed).toStrictEqual({height: 100, width: 100, x: 0, y: 0});
             // endregion
 
             // region Test: call Uploader.draw
@@ -406,7 +411,7 @@ describe("uploader", function(){
                 // region Test: call callbacks.draw
                 {
                     expect(callbackDraw).toHaveBeenCalledTimes(1);
-                    expect(callbackDraw).toHaveBeenCalledWith(uploader, 'draw');
+                    expect(callbackDraw).toHaveBeenCalledWith(uploader, "draw");
                     callbackDraw.mockClear();
                 }
                 // endregion
@@ -417,8 +422,8 @@ describe("uploader", function(){
             ]);
             uploader.canvasContext.__clearDrawCalls();
 
-            expect(uploader.ptTopLeftMask).toStrictEqual({"x": 0, "y": 0});
-            expect(uploader.ptBottomRightMask).toStrictEqual({"x": 0, "y": 0});
+            expect(uploader.ptTopLeftMask).toStrictEqual({x: 0, y: 0});
+            expect(uploader.ptBottomRightMask).toStrictEqual({x: 0, y: 0});
             // endregion
 
             expect(divUpload.hasAttribute("hidden")).toBe(true);
@@ -428,7 +433,7 @@ describe("uploader", function(){
             expect(uploaderHideError).toHaveBeenCalledTimes(1);
             uploaderHideError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
             // endregion
 
@@ -436,13 +441,13 @@ describe("uploader", function(){
 
             // region Test: call Uploader.callbacks.image.success
             expect(callbackImageSuccess).toHaveBeenCalledTimes(1);
-            expect(callbackImageSuccess).toHaveBeenCalledWith(uploader, 'treatImageOnLoad');
+            expect(callbackImageSuccess).toHaveBeenCalledWith(uploader, "treatImageOnLoad");
             callbackImageSuccess.mockClear();
             // endregion
 
             // region Test: call Uploader.callbacks.zoom.update
             expect(callbackZoomUpdate).toHaveBeenCalledTimes(1);
-            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, 'treatImageOnLoad');
+            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, "treatImageOnLoad");
             callbackZoomUpdate.mockClear();
             // endregion
 
@@ -477,52 +482,54 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderTreatImage = jest.spyOn(Uploader.prototype, 'treatImage');
-        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, 'treatImageOnLoad');
-        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, 'treatImageOnError');
-        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, 'removeEventListeners');
-        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, 'addEventListeners');
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderComputeSize = jest.spyOn(Uploader.prototype, 'computeSize');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderTreatImage = jest.spyOn(Uploader.prototype, "treatImage");
+        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, "treatImageOnLoad");
+        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, "treatImageOnError");
+        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, "removeEventListeners");
+        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, "addEventListeners");
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderComputeSize = jest.spyOn(Uploader.prototype, "computeSize");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var canvasAddEventListener = jest.spyOn(document.getElementById('canvas'), 'addEventListener');
-        var windowAddEventListener = jest.spyOn(window, 'addEventListener');
-        var canvasRemoveEventListener = jest.spyOn(document.getElementById('canvas'), 'removeEventListener');
-        var windowRemoveEventListener = jest.spyOn(window, 'removeEventListener');
+        var canvasAddEventListener = jest.spyOn(document.getElementById("canvas"), "addEventListener");
+        var windowAddEventListener = jest.spyOn(window, "addEventListener");
+        var canvasRemoveEventListener = jest.spyOn(document.getElementById("canvas"), "removeEventListener");
+        var windowRemoveEventListener = jest.spyOn(window, "removeEventListener");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
 
-        var callbackZoomUpdate = jest.spyOn(window, 'zoomUpdate');
-        var callbackImageSuccess = jest.spyOn(window, 'imageSuccess');
-        var callbackImageError = jest.spyOn(window, 'imageError');
-        var callbackDraw = jest.spyOn(window.namespace, 'draw');
+        var callbackZoomUpdate = jest.spyOn(window, "zoomUpdate");
+        var callbackImageSuccess = jest.spyOn(window, "imageSuccess");
+        var callbackImageError = jest.spyOn(window, "imageError");
+        var callbackDraw = jest.spyOn(window.namespace, "draw");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputZoom = document.getElementById("input_zoom");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divUpload = document.getElementById("div_upload");
         var divPreview = document.getElementById("div_preview");
         var divError = document.getElementById("div_error");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);
@@ -535,8 +542,8 @@ describe("uploader", function(){
         fileReaderReadAsDataURL.mockClear();
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
         // endregion
 
@@ -575,17 +582,17 @@ describe("uploader", function(){
             uploaderRemoveEventListeners.mockClear();
 
             expect(canvasRemoveEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener);
-            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener);
+            expect(canvasRemoveEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener);
             canvasRemoveEventListener.mockClear();
 
             expect(windowRemoveEventListener).toHaveBeenCalledTimes(2);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener);
-            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener);
+            expect(windowRemoveEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener);
             windowRemoveEventListener.mockClear();
             // endregion
 
@@ -594,17 +601,17 @@ describe("uploader", function(){
             uploaderAddEventListeners.mockClear();
 
             expect(canvasAddEventListener).toHaveBeenCalledTimes(6);
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, 'mousedown', uploader.eventMouseDownListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, 'touchstart', uploader.eventTouchStartListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, 'touchmove', uploader.eventTouchMoveListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, 'touchend', uploader.eventTouchEndListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, 'DOMMouseScroll', uploader.eventHandleScrollListener, {"passive": false});
-            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, 'mousewheel', uploader.eventHandleScrollListener, {"passive": false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(1, "mousedown", uploader.eventMouseDownListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(2, "touchstart", uploader.eventTouchStartListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(3, "touchmove", uploader.eventTouchMoveListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(4, "touchend", uploader.eventTouchEndListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(5, "DOMMouseScroll", uploader.eventHandleScrollListener, {passive: false});
+            expect(canvasAddEventListener).toHaveBeenNthCalledWith(6, "mousewheel", uploader.eventHandleScrollListener, {passive: false});
             canvasAddEventListener.mockClear();
 
             expect(windowAddEventListener).toHaveBeenCalledTimes(2);
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, 'mousemove', uploader.eventMouseMoveListener, {"passive": false});
-            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, 'mouseup', uploader.eventMouseUpListener, {"passive": false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(1, "mousemove", uploader.eventMouseMoveListener, {passive: false});
+            expect(windowAddEventListener).toHaveBeenNthCalledWith(2, "mouseup", uploader.eventMouseUpListener, {passive: false});
             windowAddEventListener.mockClear();
             // endregion
 
@@ -614,7 +621,7 @@ describe("uploader", function(){
             // region Test: call Uploader.computeSize
             expect(uploaderComputeSize).toHaveBeenCalledTimes(1);
             uploaderComputeSize.mockClear();
-            expect(uploader.imgSizeComputed).toStrictEqual({"height": 50, "width": 50, "x": 25, "y": 25});
+            expect(uploader.imgSizeComputed).toStrictEqual({height: 50, width: 50, x: 25, y: 25});
             // endregion
 
             // region Test: call Uploader.draw
@@ -645,7 +652,7 @@ describe("uploader", function(){
                 // region Test: call callbacks.draw
                 {
                     expect(callbackDraw).toHaveBeenCalledTimes(1);
-                    expect(callbackDraw).toHaveBeenCalledWith(uploader, 'draw');
+                    expect(callbackDraw).toHaveBeenCalledWith(uploader, "draw");
                     callbackDraw.mockClear();
                 }
                 // endregion
@@ -668,7 +675,7 @@ describe("uploader", function(){
             expect(uploaderHideError).toHaveBeenCalledTimes(1);
             uploaderHideError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
             // endregion
 
@@ -676,13 +683,13 @@ describe("uploader", function(){
 
             // region Test: call Uploader.callbacks.image.success
             expect(callbackImageSuccess).toHaveBeenCalledTimes(1);
-            expect(callbackImageSuccess).toHaveBeenCalledWith(uploader, 'treatImageOnLoad');
+            expect(callbackImageSuccess).toHaveBeenCalledWith(uploader, "treatImageOnLoad");
             callbackImageSuccess.mockClear();
             // endregion
 
             // region Test: call Uploader.callbacks.zoom.update
             expect(callbackZoomUpdate).toHaveBeenCalledTimes(1);
-            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, 'treatImageOnLoad');
+            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, "treatImageOnLoad");
             callbackZoomUpdate.mockClear();
             // endregion
 
@@ -716,54 +723,56 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        jest.spyOn(console, 'error'); // In tests that you expect errors
+        jest.spyOn(console, "error"); // In tests that you expect errors
 
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderTreatImage = jest.spyOn(Uploader.prototype, 'treatImage');
-        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, 'treatImageOnLoad');
-        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, 'treatImageOnError');
-        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, 'removeEventListeners');
-        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, 'addEventListeners');
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderComputeSize = jest.spyOn(Uploader.prototype, 'computeSize');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderTreatImage = jest.spyOn(Uploader.prototype, "treatImage");
+        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, "treatImageOnLoad");
+        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, "treatImageOnError");
+        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, "removeEventListeners");
+        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, "addEventListeners");
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderComputeSize = jest.spyOn(Uploader.prototype, "computeSize");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var canvasAddEventListener = jest.spyOn(document.getElementById('canvas'), 'addEventListener');
-        var windowAddEventListener = jest.spyOn(window, 'addEventListener');
-        var canvasRemoveEventListener = jest.spyOn(document.getElementById('canvas'), 'removeEventListener');
-        var windowRemoveEventListener = jest.spyOn(window, 'removeEventListener');
+        var canvasAddEventListener = jest.spyOn(document.getElementById("canvas"), "addEventListener");
+        var windowAddEventListener = jest.spyOn(window, "addEventListener");
+        var canvasRemoveEventListener = jest.spyOn(document.getElementById("canvas"), "removeEventListener");
+        var windowRemoveEventListener = jest.spyOn(window, "removeEventListener");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
 
-        var callbackZoomUpdate = jest.spyOn(window, 'zoomUpdate');
-        var callbackImageSuccess = jest.spyOn(window, 'imageSuccess');
-        var callbackImageError = jest.spyOn(window, 'imageError');
-        var callbackDraw = jest.spyOn(window.namespace, 'draw');
+        var callbackZoomUpdate = jest.spyOn(window, "zoomUpdate");
+        var callbackImageSuccess = jest.spyOn(window, "imageSuccess");
+        var callbackImageError = jest.spyOn(window, "imageError");
+        var callbackDraw = jest.spyOn(window.namespace, "draw");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputZoom = document.getElementById("input_zoom");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.InvalidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.InvalidFile]; })
         });
 
         var divUpload = document.getElementById("div_upload");
         var divPreview = document.getElementById("div_preview");
         var divError = document.getElementById("div_error");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);
@@ -776,8 +785,8 @@ describe("uploader", function(){
         fileReaderReadAsDataURL.mockClear();
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return ""; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return ""; })
         });
         // endregion
 
@@ -808,7 +817,7 @@ describe("uploader", function(){
 
             // region Test: call Uploader.callbacks.image.error
             expect(callbackImageError).toHaveBeenCalledTimes(1);
-            expect(callbackImageError).toHaveBeenCalledWith(uploader, 'treatImageOnError');
+            expect(callbackImageError).toHaveBeenCalledWith(uploader, "treatImageOnError");
             callbackImageError.mockClear();
             // endregion
 
@@ -835,7 +844,7 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(1);
             uploaderShowError.mockClear();
 
-            expect(divError.innerHTML).toBe('Could not load your image.<br>Use png or jpg file.');
+            expect(divError.innerHTML).toBe("Could not load your image.<br>Use png or jpg file.");
             expect(divError.hasAttribute("hidden")).toBe(false);
             // endregion
 
@@ -860,8 +869,8 @@ describe("uploader", function(){
             expect(uploader.imgSizeComputed).toBe(null);
             expect(divUpload.hasAttribute("hidden")).toBe(false);
             expect(divPreview.hasAttribute("hidden")).toBe(true);
-            expect(uploader.ptTopLeftMask).toStrictEqual({"x": 0, "y": 0});
-            expect(uploader.ptBottomRightMask).toStrictEqual({"x": 0, "y": 0});
+            expect(uploader.ptTopLeftMask).toStrictEqual({x: 0, y: 0});
+            expect(uploader.ptBottomRightMask).toStrictEqual({x: 0, y: 0});
             // endregion
 
             done();
@@ -893,51 +902,53 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderTreatImage = jest.spyOn(Uploader.prototype, 'treatImage');
-        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, 'treatImageOnLoad');
-        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, 'treatImageOnError');
-        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, 'removeEventListeners');
-        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, 'addEventListeners');
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderComputeSize = jest.spyOn(Uploader.prototype, 'computeSize');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderTreatImage = jest.spyOn(Uploader.prototype, "treatImage");
+        var uploaderTreatImageOnLoad = jest.spyOn(Uploader.prototype, "treatImageOnLoad");
+        var uploaderTreatImageOnError = jest.spyOn(Uploader.prototype, "treatImageOnError");
+        var uploaderRemoveEventListeners = jest.spyOn(Uploader.prototype, "removeEventListeners");
+        var uploaderAddEventListeners = jest.spyOn(Uploader.prototype, "addEventListeners");
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderComputeSize = jest.spyOn(Uploader.prototype, "computeSize");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var canvasAddEventListener = jest.spyOn(document.getElementById('canvas'), 'addEventListener');
-        var windowAddEventListener = jest.spyOn(window, 'addEventListener');
-        var canvasRemoveEventListener = jest.spyOn(document.getElementById('canvas'), 'removeEventListener');
-        var windowRemoveEventListener = jest.spyOn(window, 'removeEventListener');
+        var canvasAddEventListener = jest.spyOn(document.getElementById("canvas"), "addEventListener");
+        var windowAddEventListener = jest.spyOn(window, "addEventListener");
+        var canvasRemoveEventListener = jest.spyOn(document.getElementById("canvas"), "removeEventListener");
+        var windowRemoveEventListener = jest.spyOn(window, "removeEventListener");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
 
-        var callbackZoomUpdate = jest.spyOn(window, 'zoomUpdate');
-        var callbackImageSuccess = jest.spyOn(window, 'imageSuccess');
-        var callbackDraw = jest.spyOn(window.namespace, 'draw');
+        var callbackZoomUpdate = jest.spyOn(window, "zoomUpdate");
+        var callbackImageSuccess = jest.spyOn(window, "imageSuccess");
+        var callbackDraw = jest.spyOn(window.namespace, "draw");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputZoom = document.getElementById("input_zoom");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divUpload = document.getElementById("div_upload");
         var divPreview = document.getElementById("div_preview");
         var divError = document.getElementById("div_error");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);
@@ -950,8 +961,8 @@ describe("uploader", function(){
         fileReaderReadAsDataURL.mockClear();
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
         // endregion
 
@@ -1003,7 +1014,7 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(1);
             uploaderShowError.mockClear();
 
-            expect(divError.innerHTML).toBe('Could not load your image.<br>Use png or jpg file.');
+            expect(divError.innerHTML).toBe("Could not load your image.<br>Use png or jpg file.");
             expect(divError.hasAttribute("hidden")).toBe(false);
             // endregion
 
@@ -1028,14 +1039,14 @@ describe("uploader", function(){
             expect(uploader.imgSizeComputed).toBe(null);
             expect(divUpload.hasAttribute("hidden")).toBe(false);
             expect(divPreview.hasAttribute("hidden")).toBe(true);
-            expect(uploader.ptTopLeftMask).toStrictEqual({"x": 0, "y": 0});
-            expect(uploader.ptBottomRightMask).toStrictEqual({"x": 0, "y": 0});
+            expect(uploader.ptTopLeftMask).toStrictEqual({x: 0, y: 0});
+            expect(uploader.ptBottomRightMask).toStrictEqual({x: 0, y: 0});
             // endregion
 
             // region Test: call directly Uploader.showError will not append text but replace it
             uploader.showError("there is an error");
 
-            expect(divError.innerHTML).toBe('there is an error');
+            expect(divError.innerHTML).toBe("there is an error");
             expect(divError.hasAttribute("hidden")).toBe(false);
             // endregion
 
@@ -1043,7 +1054,7 @@ describe("uploader", function(){
             uploader.divErrorObj = null;
             uploader.showError("oups");
 
-            expect(divError.innerHTML).not.toBe('oups');
+            expect(divError.innerHTML).not.toBe("oups");
             // endregion
 
             done();
@@ -1072,23 +1083,25 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, 'changeInputFile');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
+        var uploaderChangeInputFile = jest.spyOn(Uploader.prototype, "changeInputFile");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
 
-        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, 'readAsDataURL').mockImplementation(() => {return window.fileDataURL;});
+        var fileReaderReadAsDataURL = jest.spyOn(FileReader.prototype, "readAsDataURL").mockImplementation(() => {
+            return window.fileDataURL;
+        });
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploaderHideError).toHaveBeenCalledTimes(1);
         uploaderHideError.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // region Test: call Uploader.changeInputFile
         expect(uploaderChangeInputFile).toHaveBeenCalledTimes(1);

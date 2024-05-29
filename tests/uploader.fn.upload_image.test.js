@@ -1,7 +1,9 @@
 /* global Uploader */
 window.saveSuccess = function() {};
 window.saveError = function() {};
-window.saveUpdateFormData = function(instance, from, formData) { return formData; };
+window.saveUpdateFormData = function(instance, from, formData) {
+    return formData;
+};
 
 /** @covers
  * Uploader.save
@@ -11,7 +13,7 @@ window.saveUpdateFormData = function(instance, from, formData) { return formData
  * Uploader.hideError
  * Uploader.showError
  */
-describe("uploader", function(){
+describe("uploader", function() {
     beforeEach(function() {
         require("./required.js");
         require("../src/helpers");
@@ -48,35 +50,35 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var callbackSaveSuccess = jest.spyOn(window, 'saveSuccess');
-        var callbackSaveError = jest.spyOn(window, 'saveError');
-        var callbackSaveUpdateFormData = jest.spyOn(window, 'saveUpdateFormData');
+        var callbackSaveSuccess = jest.spyOn(window, "saveSuccess");
+        var callbackSaveError = jest.spyOn(window, "saveError");
+        var callbackSaveUpdateFormData = jest.spyOn(window, "saveUpdateFormData");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divError = document.getElementById("div_error");
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -104,15 +106,15 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(0);
             uploaderShowError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
 
             expect(callbackSaveUpdateFormData).toHaveBeenCalledTimes(1);
-            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, 'save', formData);
+            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, "save", formData);
             callbackSaveUpdateFormData.mockClear();
 
             expect(callbackSaveSuccess).toHaveBeenCalledTimes(1);
-            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, 'saveOnLoad');
+            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, "saveOnLoad");
             callbackSaveSuccess.mockClear();
 
             expect(callbackSaveError).toHaveBeenCalledTimes(0);
@@ -122,25 +124,25 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
         uploader.eventTreatImageListener();
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -152,22 +154,22 @@ describe("uploader", function(){
             expect(uploaderSave).toHaveBeenCalledTimes(1);
             uploaderSave.mockClear();
 
-                // region Test: call Uploader.getCanvasDataURL
-                {
-                    expect(uploaderGetCanvasDataURL).toHaveBeenCalledTimes(1);
-                    uploaderGetCanvasDataURL.mockClear();
+            // region Test: call Uploader.getCanvasDataURL
+            {
+                expect(uploaderGetCanvasDataURL).toHaveBeenCalledTimes(1);
+                uploaderGetCanvasDataURL.mockClear();
 
-                    expect(canvasToDataURL).toHaveBeenCalledTimes(1);
-                    canvasToDataURL.mockClear();
-                }
-                // endregion
+                expect(canvasToDataURL).toHaveBeenCalledTimes(1);
+                canvasToDataURL.mockClear();
+            }
+            // endregion
 
             expect(uploaderClearCanvas).toHaveBeenCalledTimes(0);
             expect(uploaderDrawImage).toHaveBeenCalledTimes(0);
             expect(uploaderDrawMask).toHaveBeenCalledTimes(0);
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', 'http://localhost/');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "http://localhost/");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);
@@ -206,35 +208,35 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var callbackSaveSuccess = jest.spyOn(window, 'saveSuccess');
-        var callbackSaveError = jest.spyOn(window, 'saveError');
-        var callbackSaveUpdateFormData = jest.spyOn(window, 'saveUpdateFormData');
+        var callbackSaveSuccess = jest.spyOn(window, "saveSuccess");
+        var callbackSaveError = jest.spyOn(window, "saveError");
+        var callbackSaveUpdateFormData = jest.spyOn(window, "saveUpdateFormData");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divError = document.getElementById("div_error");
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -262,7 +264,7 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(0);
             uploaderShowError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
 
             expect(callbackSaveSuccess).toHaveBeenCalledTimes(0);
@@ -276,25 +278,25 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
         uploader.eventTreatImageListener();
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -321,7 +323,7 @@ describe("uploader", function(){
             expect(uploaderDrawMask).toHaveBeenCalledTimes(0);
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', 'http://localhost/');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "http://localhost/");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);
@@ -363,35 +365,35 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var callbackSaveSuccess = jest.spyOn(window, 'saveSuccess');
-        var callbackSaveError = jest.spyOn(window, 'saveError');
-        var callbackSaveUpdateFormData = jest.spyOn(window, 'saveUpdateFormData');
+        var callbackSaveSuccess = jest.spyOn(window, "saveSuccess");
+        var callbackSaveError = jest.spyOn(window, "saveError");
+        var callbackSaveUpdateFormData = jest.spyOn(window, "saveUpdateFormData");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divError = document.getElementById("div_error");
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -426,11 +428,11 @@ describe("uploader", function(){
             callbackSaveSuccess.mockClear();
 
             expect(callbackSaveUpdateFormData).toHaveBeenCalledTimes(1);
-            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, 'save', formData);
+            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, "save", formData);
             callbackSaveUpdateFormData.mockClear();
 
             expect(callbackSaveError).toHaveBeenCalledTimes(1);
-            expect(callbackSaveError).toHaveBeenCalledWith(uploader, 'saveOnError', expect.anything());
+            expect(callbackSaveError).toHaveBeenCalledWith(uploader, "saveOnError", expect.anything());
             callbackSaveError.mockClear();
 
             uploader.callbacks.save.error = null;
@@ -443,25 +445,25 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
         uploader.eventTreatImageListener();
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -488,7 +490,7 @@ describe("uploader", function(){
             expect(uploaderDrawMask).toHaveBeenCalledTimes(0);
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', 'http://localhost/');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "http://localhost/");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);
@@ -531,36 +533,36 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
         uploaderShowError.mockClear();
 
-        var callbackSaveSuccess = jest.spyOn(window, 'saveSuccess');
-        var callbackSaveError = jest.spyOn(window, 'saveError');
-        var callbackSaveUpdateFormData = jest.spyOn(window, 'saveUpdateFormData');
+        var callbackSaveSuccess = jest.spyOn(window, "saveSuccess");
+        var callbackSaveError = jest.spyOn(window, "saveError");
+        var callbackSaveUpdateFormData = jest.spyOn(window, "saveUpdateFormData");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divError = document.getElementById("div_error");
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -576,13 +578,14 @@ describe("uploader", function(){
             // endregion
 
             // region Test: verify canvas draw calls
-            //var drawCalls = uploader.canvasContext.__getDrawCalls();
-            // ???
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 window.canvasDrawCalls.clearRect,
                 window.canvasDrawCalls.drawImage_Size100Mask50,
                 window.canvasDrawCalls.fill_MaskSize50x40Radius0
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
             // endregion
 
@@ -597,15 +600,15 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(0);
             uploaderShowError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
 
             expect(callbackSaveUpdateFormData).toHaveBeenCalledTimes(1);
-            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, 'save', formData);
+            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, "save", formData);
             callbackSaveUpdateFormData.mockClear();
 
             expect(callbackSaveSuccess).toHaveBeenCalledTimes(1);
-            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, 'saveOnLoad');
+            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, "saveOnLoad");
             callbackSaveSuccess.mockClear();
 
             expect(callbackSaveError).toHaveBeenCalledTimes(0);
@@ -615,11 +618,11 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -630,14 +633,14 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -681,7 +684,7 @@ describe("uploader", function(){
             // endregion
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', 'http://localhost/');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "http://localhost/");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);
@@ -727,35 +730,35 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
-        var uploaderShowError = jest.spyOn(Uploader.prototype, 'showError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
+        var uploaderShowError = jest.spyOn(Uploader.prototype, "showError");
 
-        var callbackSaveSuccess = jest.spyOn(window, 'saveSuccess');
-        var callbackSaveError = jest.spyOn(window, 'saveError');
-        var callbackSaveUpdateFormData = jest.spyOn(window, 'saveUpdateFormData');
+        var callbackSaveSuccess = jest.spyOn(window, "saveSuccess");
+        var callbackSaveError = jest.spyOn(window, "saveError");
+        var callbackSaveUpdateFormData = jest.spyOn(window, "saveUpdateFormData");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var divError = document.getElementById("div_error");
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -771,13 +774,14 @@ describe("uploader", function(){
             // endregion
 
             // region Test: verify canvas draw calls
-            //var drawCalls = uploader.canvasContext.__getDrawCalls();
-            //???
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 window.canvasDrawCalls.clearRect,
                 window.canvasDrawCalls.drawImage_Size100Mask50,
                 window.canvasDrawCalls.fill_MaskSize50x40Radius0
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
             // endregion
 
@@ -792,15 +796,15 @@ describe("uploader", function(){
             expect(uploaderShowError).toHaveBeenCalledTimes(0);
             uploaderShowError.mockClear();
 
-            expect(divError.textContent).toBe('');
+            expect(divError.textContent).toBe("");
             expect(divError.hasAttribute("hidden")).toBe(true);
 
             expect(callbackSaveUpdateFormData).toHaveBeenCalledTimes(1);
-            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, 'save', formData);
+            expect(callbackSaveUpdateFormData).toHaveBeenCalledWith(uploader, "save", formData);
             callbackSaveUpdateFormData.mockClear();
 
             expect(callbackSaveSuccess).toHaveBeenCalledTimes(1);
-            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, 'saveOnLoad');
+            expect(callbackSaveSuccess).toHaveBeenCalledWith(uploader, "saveOnLoad");
             callbackSaveSuccess.mockClear();
 
             expect(callbackSaveError).toHaveBeenCalledTimes(0);
@@ -810,11 +814,11 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -825,14 +829,14 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -876,7 +880,7 @@ describe("uploader", function(){
             // endregion
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', '/yolo');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "/yolo");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);
@@ -905,20 +909,20 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send');
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send");
         // endregion
 
         btnSave.click();
@@ -962,29 +966,29 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderSave = jest.spyOn(Uploader.prototype, 'save');
-        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, 'getCanvasDataURL');
-        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, 'clearCanvas');
-        var uploaderDrawImage = jest.spyOn(Uploader.prototype, 'drawImage');
-        var uploaderDrawMask = jest.spyOn(Uploader.prototype, 'drawMask');
-        var uploaderHideError = jest.spyOn(Uploader.prototype, 'hideError');
+        var uploaderSave = jest.spyOn(Uploader.prototype, "save");
+        var uploaderGetCanvasDataURL = jest.spyOn(Uploader.prototype, "getCanvasDataURL");
+        var uploaderClearCanvas = jest.spyOn(Uploader.prototype, "clearCanvas");
+        var uploaderDrawImage = jest.spyOn(Uploader.prototype, "drawImage");
+        var uploaderDrawMask = jest.spyOn(Uploader.prototype, "drawMask");
+        var uploaderHideError = jest.spyOn(Uploader.prototype, "hideError");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
         var btnSave = document.getElementById("save");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Setup: XHR
-        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, 'open');
-        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, 'send').mockImplementation(function(formData) {
+        var xhrOpen = jest.spyOn(XMLHttpRequest.prototype, "open");
+        var xhrSend = jest.spyOn(XMLHttpRequest.prototype, "send").mockImplementation(function(formData) {
             // WARNING, this test can only be here because it's too quick for being test after save click
             expect(uploader.canSave).toBe(false);
 
@@ -1011,25 +1015,25 @@ describe("uploader", function(){
         });
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
         uploader.eventTreatImageListener();
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderHideError.mockClear();
             uploader.canvasContext.__clearDrawCalls();
 
             // WARNING, before saving we need to mock canvas.toDataURL
             uploader.canvasObj.toDataURL.mockReturnValueOnce(window.canvasDataURL);
-            var canvasToDataURL = jest.spyOn(uploader.canvasObj, 'toDataURL');
+            var canvasToDataURL = jest.spyOn(uploader.canvasObj, "toDataURL");
 
             uploaderClearCanvas.mockClear();
             uploaderDrawImage.mockClear();
@@ -1056,7 +1060,7 @@ describe("uploader", function(){
             expect(uploaderDrawMask).toHaveBeenCalledTimes(0);
 
             expect(xhrOpen).toHaveBeenCalledTimes(1);
-            expect(xhrOpen).toHaveBeenCalledWith('POST', 'http://localhost/');
+            expect(xhrOpen).toHaveBeenCalledWith("POST", "http://localhost/");
             xhrOpen.mockClear();
 
             expect(xhrSend).toHaveBeenCalledTimes(1);

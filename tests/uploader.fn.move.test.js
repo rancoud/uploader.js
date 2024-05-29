@@ -1,16 +1,16 @@
 /* global Uploader */
 window.zoomUpdate = function() {};
 window.customZoomUpdate = function(uploaderInstance, from) {
-    if (from !== 'updateZoomFromInput') {
+    if (from !== "updateZoomFromInput") {
         return;
     }
 
     // eslint-disable-next-line jest/no-standalone-expect
     expect(uploaderInstance.inProgress).toBe(true);
-    uploaderInstance.updateZoomFromInput({ preventDefault: () => {} });
+    uploaderInstance.updateZoomFromInput({preventDefault: () => {}});
     // eslint-disable-next-line jest/no-standalone-expect
     expect(uploaderInstance.inProgress).toBe(true);
-}
+};
 
 /** @covers
  * Uploader.moveStart
@@ -26,7 +26,7 @@ window.customZoomUpdate = function(uploaderInstance, from) {
  * Uploader.zoom
  * Uploader.handleScroll
  */
-describe("uploader", function(){
+describe("uploader", function() {
     beforeEach(function() {
         require("./required.js");
         require("../src/helpers");
@@ -46,27 +46,27 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderMoveStart = jest.spyOn(Uploader.prototype, 'moveStart');
-        var uploaderMoveMove = jest.spyOn(Uploader.prototype, 'moveMove');
-        var uploaderMoveEnd = jest.spyOn(Uploader.prototype, 'moveEnd');
+        var uploaderMoveStart = jest.spyOn(Uploader.prototype, "moveStart");
+        var uploaderMoveMove = jest.spyOn(Uploader.prototype, "moveMove");
+        var uploaderMoveEnd = jest.spyOn(Uploader.prototype, "moveEnd");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -77,21 +77,21 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // region Test: call Uploader.moveStart
-            canvasObj.dispatchEvent(new Event('mousedown'));
+            canvasObj.dispatchEvent(new Event("mousedown"));
             expect(uploaderMoveStart).toHaveBeenCalledTimes(1);
             uploaderMoveStart.mockClear();
             // endregion
 
             // region Test: call Uploader.moveMove
-            window.dispatchEvent(new Event('mousemove'));
+            window.dispatchEvent(new Event("mousemove"));
             expect(uploaderMoveMove).toHaveBeenCalledTimes(1);
             uploaderMoveMove.mockClear();
             // endregion
 
             // region Test: call Uploader.moveEnd
-            window.dispatchEvent(new Event('mouseup'));
+            window.dispatchEvent(new Event("mouseup"));
             expect(uploaderMoveEnd).toHaveBeenCalledTimes(1);
             uploaderMoveEnd.mockClear();
             // endregion
@@ -113,27 +113,27 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderMoveStart = jest.spyOn(Uploader.prototype, 'moveStart');
-        var uploaderMoveMove = jest.spyOn(Uploader.prototype, 'moveMove');
-        var uploaderMoveEnd = jest.spyOn(Uploader.prototype, 'moveEnd');
+        var uploaderMoveStart = jest.spyOn(Uploader.prototype, "moveStart");
+        var uploaderMoveMove = jest.spyOn(Uploader.prototype, "moveMove");
+        var uploaderMoveEnd = jest.spyOn(Uploader.prototype, "moveEnd");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -144,23 +144,23 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
-            var touchStart = document.createEvent('TouchEvent');
+        setTimeout(function() {
+            var touchStart = document.createEvent("TouchEvent");
             touchStart.initEvent("touchstart", true, true);
-            Object.defineProperty(touchStart, 'touches', {
-                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}]),
+            Object.defineProperty(touchStart, "touches", {
+                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}])
             });
 
-            var touchMove = document.createEvent('TouchEvent');
+            var touchMove = document.createEvent("TouchEvent");
             touchMove.initEvent("touchmove", true, true);
-            Object.defineProperty(touchMove, 'touches', {
-                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}]),
+            Object.defineProperty(touchMove, "touches", {
+                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}])
             });
 
-            var touchEnd = document.createEvent('TouchEvent');
+            var touchEnd = document.createEvent("TouchEvent");
             touchEnd.initEvent("touchend", true, true);
-            Object.defineProperty(touchEnd, 'touches', {
-                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}]),
+            Object.defineProperty(touchEnd, "touches", {
+                get: jest.fn().mockReturnValue([{pageX: 0, pageY: 0}])
             });
 
             // region Test: call Uploader.moveStart
@@ -201,30 +201,30 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderHandleScroll = jest.spyOn(Uploader.prototype, 'handleScroll');
-        var uploaderZoomIn = jest.spyOn(Uploader.prototype, 'zoomIn');
-        var uploaderZoomOut = jest.spyOn(Uploader.prototype, 'zoomOut');
-        var uploaderZoom = jest.spyOn(Uploader.prototype, 'zoom');
-        var uploaderChangeInputZoomListener = jest.spyOn(Uploader.prototype, 'changeInputZoomListener');
-        var uploaderInputInputZoomListener = jest.spyOn(Uploader.prototype, 'inputInputZoomListener');
+        var uploaderHandleScroll = jest.spyOn(Uploader.prototype, "handleScroll");
+        var uploaderZoomIn = jest.spyOn(Uploader.prototype, "zoomIn");
+        var uploaderZoomOut = jest.spyOn(Uploader.prototype, "zoomOut");
+        var uploaderZoom = jest.spyOn(Uploader.prototype, "zoom");
+        var uploaderChangeInputZoomListener = jest.spyOn(Uploader.prototype, "changeInputZoomListener");
+        var uploaderInputInputZoomListener = jest.spyOn(Uploader.prototype, "inputInputZoomListener");
 
-        var callbackZoomUpdate = jest.spyOn(window, 'zoomUpdate');
+        var callbackZoomUpdate = jest.spyOn(window, "zoomUpdate");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
         var inputZoom = document.getElementById("input_zoom");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
         // region Test: call Uploader.updateZoomFromInput
-        inputZoom.dispatchEvent(new Event('change'));
+        inputZoom.dispatchEvent(new Event("change"));
         expect(uploaderChangeInputZoomListener).toHaveBeenCalledTimes(1);
         uploaderChangeInputZoomListener.mockClear();
 
@@ -232,11 +232,11 @@ describe("uploader", function(){
         callbackZoomUpdate.mockClear();
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -247,11 +247,11 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             callbackZoomUpdate.mockClear();
 
             // region Test: call Uploader.handleScroll with DOMMouseScroll -1 (zoomIn)
-            canvasObj.dispatchEvent(new CustomEvent('DOMMouseScroll', {detail: -1}));
+            canvasObj.dispatchEvent(new CustomEvent("DOMMouseScroll", {detail: -1}));
             expect(uploaderHandleScroll).toHaveBeenCalledTimes(1);
             uploaderHandleScroll.mockClear();
 
@@ -269,7 +269,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: call Uploader.handleScroll with DOMMouseScroll +1 (zoomOut)
-            canvasObj.dispatchEvent(new CustomEvent('DOMMouseScroll', {detail: 1}));
+            canvasObj.dispatchEvent(new CustomEvent("DOMMouseScroll", {detail: 1}));
             expect(uploaderHandleScroll).toHaveBeenCalledTimes(1);
             uploaderHandleScroll.mockClear();
 
@@ -285,7 +285,7 @@ describe("uploader", function(){
             expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, "handleScroll");
             callbackZoomUpdate.mockClear();
 
-            canvasObj.dispatchEvent(new CustomEvent('DOMMouseScroll', {detail: 1}));
+            canvasObj.dispatchEvent(new CustomEvent("DOMMouseScroll", {detail: 1}));
             expect(uploaderHandleScroll).toHaveBeenCalledTimes(1);
             uploaderHandleScroll.mockClear();
 
@@ -303,7 +303,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: call Uploader.handleScroll with mousewheel -1 (zoomIn)
-            canvasObj.dispatchEvent(new CustomEvent('mousewheel', {detail: -1}));
+            canvasObj.dispatchEvent(new CustomEvent("mousewheel", {detail: -1}));
             expect(uploaderHandleScroll).toHaveBeenCalledTimes(1);
             uploaderHandleScroll.mockClear();
 
@@ -321,7 +321,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: call Uploader.handleScroll with mousewheel +1 (zoomOut)
-            canvasObj.dispatchEvent(new CustomEvent('mousewheel', {detail: 1}));
+            canvasObj.dispatchEvent(new CustomEvent("mousewheel", {detail: 1}));
             expect(uploaderHandleScroll).toHaveBeenCalledTimes(1);
             uploaderHandleScroll.mockClear();
 
@@ -339,7 +339,7 @@ describe("uploader", function(){
             // endregion
 
             // region Test: call Uploader.updateZoomFromInput
-            inputZoom.dispatchEvent(new Event('change'));
+            inputZoom.dispatchEvent(new Event("change"));
             expect(uploaderChangeInputZoomListener).toHaveBeenCalledTimes(1);
             uploaderChangeInputZoomListener.mockClear();
 
@@ -349,22 +349,22 @@ describe("uploader", function(){
             // endregion
 
             // region Test: call Uploader.updateZoomFromInput
-            inputZoom.dispatchEvent(new Event('input'));
+            inputZoom.dispatchEvent(new Event("input"));
             expect(uploaderInputInputZoomListener).toHaveBeenCalledTimes(1);
             uploaderInputInputZoomListener.mockClear();
 
             expect(callbackZoomUpdate).toHaveBeenCalledTimes(1);
-            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, 'updateZoomFromInput');
+            expect(callbackZoomUpdate).toHaveBeenCalledWith(uploader, "updateZoomFromInput");
             callbackZoomUpdate.mockClear();
             // endregion
 
             // region Test: call Uploader.handleScroll with wheelDelta
-            uploader.handleScroll({offsetX:0, offsetY: 0, wheelDelta: 10});
+            uploader.handleScroll({offsetX: 0, offsetY: 0, wheelDelta: 10});
 
             expect(uploaderZoomIn).toHaveBeenCalledTimes(1);
             uploaderZoomIn.mockClear();
 
-            uploader.handleScroll({offsetX:0, offsetY: 0, wheelDelta: -10});
+            uploader.handleScroll({offsetX: 0, offsetY: 0, wheelDelta: -10});
 
             expect(uploaderZoomOut).toHaveBeenCalledTimes(1);
             uploaderZoomOut.mockClear();
@@ -374,7 +374,7 @@ describe("uploader", function(){
             callbackZoomUpdate.mockClear();
             uploader.inputZoomObj = null;
             uploader.callbacks.zoom.update = null;
-            uploader.handleScroll({offsetX:0, offsetY: 0, wheelDelta: 10});
+            uploader.handleScroll({offsetX: 0, offsetY: 0, wheelDelta: 10});
 
             expect(inputZoom.value).not.toBe(uploader.zoomCurrent);
             expect(callbackZoomUpdate).toHaveBeenCalledTimes(0);
@@ -399,26 +399,26 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, 'keepImgInsideMaskBoundings');
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, "keepImgInsideMaskBoundings");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -429,7 +429,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderDraw.mockClear();
             uploader.canvasContext.__clearDrawCalls();
@@ -443,7 +443,7 @@ describe("uploader", function(){
             expect(uploader.lastX).toBe(1);
             expect(uploader.lastY).toBe(3);
             expect(uploader.dragStart).toStrictEqual({x: 1, y: 3});
-            expect(canvasObj.classList.contains('uploader__canvas--moving')).toBe(true);
+            expect(canvasObj.classList.contains("uploader__canvas--moving")).toBe(true);
             // endregion
 
             // region Test: call Uploader.moveMove
@@ -453,15 +453,16 @@ describe("uploader", function(){
             expect(uploader.lastY).toBe(15);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 9, "y": 12});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 9, "y": 12});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 9, y: 12});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 9, y: 12});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
             var drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 100,
@@ -501,7 +502,8 @@ describe("uploader", function(){
                     ],
                     "type": "drawImage"
                 }
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
 
             expect(uploader.dragStart).toStrictEqual({x: 10, y: 15});
@@ -510,11 +512,11 @@ describe("uploader", function(){
             // region Test: call Uploader.moveEnd
             uploader.moveEnd({pageX: 999999, pageY: 999999});
             expect(uploader.dragStart).toBe(null);
-            expect(canvasObj.classList.contains('uploader__canvas--moving')).toBe(false);
+            expect(canvasObj.classList.contains("uploader__canvas--moving")).toBe(false);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 0, "y": 0});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 0, "y": 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 0, y: 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 0, y: 0});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(0);
@@ -543,26 +545,26 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, 'keepImgInsideMaskBoundings');
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, "keepImgInsideMaskBoundings");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -573,7 +575,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderDraw.mockClear();
             uploader.canvasContext.__clearDrawCalls();
@@ -596,8 +598,8 @@ describe("uploader", function(){
             expect(uploader.lastY).toBe(15);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 0, "y": 0});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 0, "y": 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 0, y: 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 0, y: 0});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(0);
@@ -613,11 +615,11 @@ describe("uploader", function(){
             // region Test: call Uploader.moveEnd
             uploader.moveEnd({pageX: 999999, pageY: 999999});
             expect(uploader.dragStart).toBe(null);
-            expect(canvasObj.classList.contains('uploader__canvas--moving')).toBe(false);
+            expect(canvasObj.classList.contains("uploader__canvas--moving")).toBe(false);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 0, "y": 0});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 0, "y": 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 0, y: 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 0, y: 0});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(0);
@@ -646,26 +648,26 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, 'keepImgInsideMaskBoundings');
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, "keepImgInsideMaskBoundings");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -676,7 +678,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderDraw.mockClear();
             uploader.canvasContext.__clearDrawCalls();
@@ -709,15 +711,16 @@ describe("uploader", function(){
             expect(uploader.lastY).toBe(15);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 9 * currentScale, "y": 12 * currentScale});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 9 * currentScale, "y": 12 * currentScale});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 9 * currentScale, y: 12 * currentScale});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 9 * currentScale, y: 12 * currentScale});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
-            //var drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 100 * currentScale,
@@ -767,18 +770,19 @@ describe("uploader", function(){
             // region Test: call Uploader.moveEnd
             uploader.moveEnd({pageX: 0, pageY: 0});
             expect(uploader.dragStart).toBe(null);
-            expect(canvasObj.classList.contains('uploader__canvas--moving')).toBe(false);
+            expect(canvasObj.classList.contains("uploader__canvas--moving")).toBe(false);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": -5.839002267573694, "y": -8.560090702947846}); // ???
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": -5.839002267573694, "y": -8.560090702947846}); // ???
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: -5.839002267573694, y: -8.560090702947846}); // ???
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: -5.839002267573694, y: -8.560090702947846}); // ???
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
-            //drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 90.702947845805,
@@ -950,7 +954,8 @@ describe("uploader", function(){
                     ],
                     "type": "fill"
                 }
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
             // endregion
 
@@ -973,26 +978,26 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderDraw = jest.spyOn(Uploader.prototype, 'draw');
-        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, 'keepImgInsideMaskBoundings');
+        var uploaderDraw = jest.spyOn(Uploader.prototype, "draw");
+        var uploaderKeepImgInsideMaskBoundings = jest.spyOn(Uploader.prototype, "keepImgInsideMaskBoundings");
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var canvasObj = document.getElementById("canvas");
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -1003,7 +1008,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             // clean
             uploaderDraw.mockClear();
             uploader.canvasContext.__clearDrawCalls();
@@ -1023,7 +1028,7 @@ describe("uploader", function(){
             expect(uploader.lastX).toBe(0);
             expect(uploader.lastY).toBe(0);
             expect(uploader.dragStart).toStrictEqual({x: 0, y: 0});
-            expect(canvasObj.classList.toString()).toBe('');
+            expect(canvasObj.classList.toString()).toBe("");
             // endregion
 
             // region Test: call Uploader.moveMove
@@ -1033,15 +1038,16 @@ describe("uploader", function(){
             expect(uploader.lastY).toBe(15);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 10 * currentScale, "y": 15 * currentScale});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 10 * currentScale, "y": 15 * currentScale});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 10 * currentScale, y: 15 * currentScale});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 10 * currentScale, y: 15 * currentScale});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(1);
             uploaderDraw.mockClear();
 
             var drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 100 * currentScale,
@@ -1082,7 +1088,8 @@ describe("uploader", function(){
                     "type": "drawImage"
                 },
                 window.canvasDrawCalls.fill_MaskSize50Radius0
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
 
             expect(uploader.dragStart).toStrictEqual({x: 10, y: 15});
@@ -1091,11 +1098,11 @@ describe("uploader", function(){
             // region Test: call Uploader.moveEnd
             uploader.moveEnd({pageX: 0, pageY: 0});
             expect(uploader.dragStart).toBe(null);
-            expect(canvasObj.classList.contains('uploader__canvas--moving')).toBe(false);
+            expect(canvasObj.classList.contains("uploader__canvas--moving")).toBe(false);
 
             expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledTimes(1);
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({"x": 0, "y": 0});
-            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({"x": 0, "y": 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveBeenCalledWith({x: 0, y: 0});
+            expect(uploaderKeepImgInsideMaskBoundings).toHaveReturnedWith({x: 0, y: 0});
             uploaderKeepImgInsideMaskBoundings.mockClear();
 
             expect(uploaderDraw).toHaveBeenCalledTimes(0);
@@ -1125,19 +1132,19 @@ describe("uploader", function(){
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -1148,7 +1155,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             var translation = {x: 0, y: 0};
 
             // initials values
@@ -1277,19 +1284,19 @@ describe("uploader", function(){
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -1300,7 +1307,7 @@ describe("uploader", function(){
         uploader.img.dispatchEvent(new Event("load"));
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             expect(uploader.dragStart).toBe(null);
 
             uploader.moveMove({pageX: 10, pageY: 15});
@@ -1326,27 +1333,27 @@ describe("uploader", function(){
         // endregion
 
         // region Setup: jest spy
-        var uploaderZoomIn = jest.spyOn(Uploader.prototype, 'zoomIn');
+        var uploaderZoomIn = jest.spyOn(Uploader.prototype, "zoomIn");
         uploaderZoomIn.mockClear();
-        var uploaderZoomOut = jest.spyOn(Uploader.prototype, 'zoomOut');
+        var uploaderZoomOut = jest.spyOn(Uploader.prototype, "zoomOut");
         uploaderZoomOut.mockClear();
         // endregion
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -1360,17 +1367,18 @@ describe("uploader", function(){
         img.src = window.fileDataURL;
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             uploader.canvasContext.__clearDrawCalls();
 
-            uploader.updateZoomFromInput({target:{value:2}});
+            uploader.updateZoomFromInput({target: {value: 2}});
             expect(uploaderZoomIn).toHaveBeenCalledTimes(0);
             uploaderZoomIn.mockClear();
             expect(uploaderZoomOut).toHaveBeenCalledTimes(0);
             uploaderZoomOut.mockClear();
 
-            //var drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            var drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 95.23809523809524,
@@ -1410,17 +1418,19 @@ describe("uploader", function(){
                     ],
                     "type": "drawImage"
                 }
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
 
-            uploader.updateZoomFromInput({target:{value:1}});
+            uploader.updateZoomFromInput({target: {value: 1}});
             expect(uploaderZoomIn).toHaveBeenCalledTimes(0);
             uploaderZoomIn.mockClear();
             expect(uploaderZoomOut).toHaveBeenCalledTimes(0);
             uploaderZoomOut.mockClear();
 
-            //drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 100,
@@ -1460,13 +1470,15 @@ describe("uploader", function(){
                     ],
                     "type": "drawImage"
                 }
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
 
-            uploader.updateZoomFromInput({target:{value:-1}});
+            uploader.updateZoomFromInput({target: {value: -1}});
 
-            //drawCalls = uploader.canvasContext.__getDrawCalls();
-            /*expect(drawCalls).toStrictEqual([
+            /*
+            drawCalls = uploader.canvasContext.__getDrawCalls();
+            expect(drawCalls).toStrictEqual([
                 {
                     "props": {
                         "height": 100,
@@ -1506,7 +1518,8 @@ describe("uploader", function(){
                     ],
                     "type": "drawImage"
                 }
-            ]);*/
+            ]);
+            */
             uploader.canvasContext.__clearDrawCalls();
 
             done();
@@ -1530,19 +1543,19 @@ describe("uploader", function(){
 
         // region Setup: input file/zoom + div preview/upload + new Uploader
         var inputFile = document.getElementById("input_file");
-        Object.defineProperty(inputFile, 'files', {
-            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; }),
+        Object.defineProperty(inputFile, "files", {
+            get: jest.fn().mockImplementation(() => { return [window.ValidFile]; })
         });
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         // endregion
 
-        inputFile.dispatchEvent(new Event('change'));
+        inputFile.dispatchEvent(new Event("change"));
 
         // WARNING, uploader.reader.result is mocked because it return null in jest
-        Object.defineProperty(uploader.reader, 'result', {
-            get: jest.fn().mockImplementation(() => { return window.fileDataURL; }),
+        Object.defineProperty(uploader.reader, "result", {
+            get: jest.fn().mockImplementation(() => { return window.fileDataURL; })
         });
 
         // WARNING, because of jest we have to simulate load event for FileReader setted in Uploader.initAttributes
@@ -1556,12 +1569,12 @@ describe("uploader", function(){
         img.src = window.fileDataURL;
 
         // WARNING, jest.useFakeTimers() not working with image.onload event
-        setTimeout(function(){
+        setTimeout(function() {
             uploader.canvasContext.__clearDrawCalls();
 
-            uploader.updateZoomFromInput({target:{value:2}});
+            uploader.updateZoomFromInput({target: {value: 2}});
 
-            setTimeout(function(){
+            setTimeout(function() {
                 done();
             }, 100);
         }, 20);

@@ -27,7 +27,7 @@ window.namespace.draw = function() {};
  * Uploader.initCancel
  * Uploader.hideError
  */
-describe("uploader", function(){
+describe("uploader", function() {
     beforeEach(function() {
         require("./required.js");
         require("../src/helpers");
@@ -37,14 +37,14 @@ describe("uploader", function(){
     // region Mandatory
     it("should return error on missing mandatory attributes", function(done) {
         document.body.innerHTML = `<div id="uploader"></div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-input_file-id, expect string, get object");
 
         // ---
 
         document.body.innerHTML = `<div id="uploader" data-uploader-input_file-id="aze"></div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element aze not found");
 
@@ -55,7 +55,7 @@ describe("uploader", function(){
     data-uploader-input_file-id="input_file">
     <input type="file" id="input_file" />
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-canvas-id, expect string, get object");
 
@@ -67,7 +67,7 @@ describe("uploader", function(){
     data-uploader-canvas-id="aze">
     <input type="file" id="input_file" />
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element aze not found");
 
@@ -80,10 +80,10 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.inputFileObj).toBe(document.getElementById('input_file'));
-        expect(uploader.canvasObj).toBe(document.getElementById('canvas'));
+        expect(uploader.inputFileObj).toBe(document.getElementById("input_file"));
+        expect(uploader.canvasObj).toBe(document.getElementById("canvas"));
 
         done();
     });
@@ -97,9 +97,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var inputFileAddEventListener = jest.spyOn(document.getElementById('input_file'), 'addEventListener');
+        var inputFileAddEventListener = jest.spyOn(document.getElementById("input_file"), "addEventListener");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(inputFileAddEventListener).toHaveBeenCalledTimes(1);
@@ -117,13 +117,13 @@ describe("uploader", function(){
     <canvas id="canvas" width="80" height="50"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.lastX).toBe(40);
         expect(uploader.lastY).toBe(25);
 
-        expect(uploader.canvasContext).toBe(document.getElementById('canvas').getContext('2d'));
+        expect(uploader.canvasContext).toBe(document.getElementById("canvas").getContext("2d"));
         expect(uploader.canvasContext.imageSmoothingEnabled).toBe(true);
         expect(uploader.canvasContext.imageSmoothingQuality).toBe("high");
 
@@ -150,7 +150,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element div_upload not found");
 
@@ -166,9 +166,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <div id="div_upload"></div>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.divUploadObj).toBe(document.getElementById('div_upload'));
+        expect(uploader.divUploadObj).toBe(document.getElementById("div_upload"));
 
         // ---
 
@@ -181,7 +181,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element div_preview not found");
 
@@ -197,9 +197,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <div id="div_preview"></div>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.divPreviewObj).toBe(document.getElementById('div_preview'));
+        expect(uploader.divPreviewObj).toBe(document.getElementById("div_preview"));
 
         // ---
 
@@ -212,7 +212,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element div_error not found");
 
@@ -228,9 +228,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <div id="div_error"></div>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.divErrorObj).toBe(document.getElementById('div_error'));
+        expect(uploader.divErrorObj).toBe(document.getElementById("div_error"));
 
         done();
     });
@@ -250,24 +250,24 @@ describe("uploader", function(){
     <div id="div_error">text to remove</div>
 </div>`;
 
-        var divPreview = document.getElementById('div_preview');
-        var divUpload = document.getElementById('div_upload');
-        var divError = document.getElementById('div_error');
+        var divPreview = document.getElementById("div_preview");
+        var divUpload = document.getElementById("div_upload");
+        var divError = document.getElementById("div_error");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.divPreviewObj).toBe(divPreview);
-        expect(divPreview.hasAttribute('hidden')).toBe(true);
-        expect(divPreview.innerHTML).toBe('');
+        expect(divPreview.hasAttribute("hidden")).toBe(true);
+        expect(divPreview.innerHTML).toBe("");
 
         expect(uploader.divUploadObj).toBe(divUpload);
-        expect(divUpload.hasAttribute('hidden')).toBe(false);
-        expect(divUpload.innerHTML).toBe('');
+        expect(divUpload.hasAttribute("hidden")).toBe(false);
+        expect(divUpload.innerHTML).toBe("");
 
         expect(uploader.divErrorObj).toBe(divError);
-        expect(divError.hasAttribute('hidden')).toBe(true);
-        expect(divError.innerHTML).toBe('');
+        expect(divError.hasAttribute("hidden")).toBe(true);
+        expect(divError.innerHTML).toBe("");
 
         done();
     });
@@ -284,7 +284,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-size, expect size above 0, get width: 0 height: 0");
 
@@ -297,7 +297,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-size, expect size above 0, get width: 0 height: 0");
 
@@ -310,7 +310,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-size, expect size above 0, get width: 0 height: 0");
 
@@ -323,7 +323,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-size, expect size below canvas size, get width: 200 height: 200");
 
@@ -336,7 +336,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-size, expect size below canvas size, get width: 10 height: 200");
 
@@ -349,9 +349,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.maskRaw.size).toStrictEqual({width:10, height:100});
+        expect(uploader.maskRaw.size).toStrictEqual({width: 10, height: 100});
 
         done();
     });
@@ -366,7 +366,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-color, you have to set data-uploader-mask-size first");
 
@@ -380,9 +380,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.maskRaw.color).toBe('rgba(13, 6, 45, 0.4)');
+        expect(uploader.maskRaw.color).toBe("rgba(13, 6, 45, 0.4)");
 
         document.body.innerHTML = `
 <div id="uploader"
@@ -393,9 +393,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.maskRaw.color).toBe('rgba(255, 255, 255, 0.5)');
+        expect(uploader.maskRaw.color).toBe("rgba(255, 255, 255, 0.5)");
 
         done();
     });
@@ -410,7 +410,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-radius, you have to set data-uploader-mask-size first");
 
@@ -426,7 +426,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.maskRaw.radius).toBe(0);
 
@@ -442,7 +442,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.maskRaw.radius).toBe(10);
 
@@ -458,7 +458,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.maskRaw.radius).toBe(25);
 
@@ -475,7 +475,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("Invalid attribute data-uploader-mask-constraint, you have to set data-uploader-mask-size first");
 
@@ -491,9 +491,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid attribute data-uploader-mask-constraint, expect value "true" or "false", get fit');
+        expect(err.message).toBe(`Invalid attribute data-uploader-mask-constraint, expect value "true" or "false", get fit`);
 
         // ---
 
@@ -507,7 +507,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.maskRaw.constraint).toBe(false);
 
@@ -523,7 +523,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        uploader = new Uploader(document.getElementById('uploader'));
+        uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.maskRaw.constraint).toBe(true);
 
@@ -544,16 +544,16 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.mask).toStrictEqual({
-            x: 45,
-            y: 0,
-            width: 10,
-            height: 100,
-            color: 'rgba(13, 6, 45, 0.4)',
-            radius: 5,
-            constraint: true,
+            x         : 45,
+            y         : 0,
+            width     : 10,
+            height    : 100,
+            color     : "rgba(13, 6, 45, 0.4)",
+            radius    : 5,
+            constraint: true
         });
 
         done();
@@ -571,7 +571,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element input_zoom not found");
 
@@ -587,9 +587,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <input type="range" id="input_zoom" value="1"/>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.inputZoomObj).toBe(document.getElementById('input_zoom'));
+        expect(uploader.inputZoomObj).toBe(document.getElementById("input_zoom"));
 
         // ---
 
@@ -608,9 +608,9 @@ describe("uploader", function(){
     <input type="range" id="input_zoom" value="1"/>
 </div>`;
 
-        var inputZoomAddEventListener = jest.spyOn(document.getElementById('input_zoom'), 'addEventListener');
+        var inputZoomAddEventListener = jest.spyOn(document.getElementById("input_zoom"), "addEventListener");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.zoomCurrent).toBe(1);
@@ -633,7 +633,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element save not found");
 
@@ -649,9 +649,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="save"></button>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.btnSaveObj).toBe(document.getElementById('save'));
+        expect(uploader.btnSaveObj).toBe(document.getElementById("save"));
 
         // ---
 
@@ -670,7 +670,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.uploadUrl).toBe(window.location.toString());
@@ -693,7 +693,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.uploadUrl).toBe("/url");
@@ -715,9 +715,9 @@ describe("uploader", function(){
     <button id="save"></button>
 </div>`;
 
-        var saveAddEventListener = jest.spyOn(document.getElementById('save'), 'addEventListener');
+        var saveAddEventListener = jest.spyOn(document.getElementById("save"), "addEventListener");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(saveAddEventListener).toHaveBeenCalledTimes(1);
@@ -738,7 +738,7 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
         expect(err.message).toBe("DOM element cancel not found");
 
@@ -754,9 +754,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
-        expect(uploader.btnCancelObj).toBe(document.getElementById('cancel'));
+        expect(uploader.btnCancelObj).toBe(document.getElementById("cancel"));
 
         // ---
 
@@ -775,9 +775,9 @@ describe("uploader", function(){
     <button id="cancel"></button>
 </div>`;
 
-        var cancelAddEventListener = jest.spyOn(document.getElementById('cancel'), 'addEventListener');
+        var cancelAddEventListener = jest.spyOn(document.getElementById("cancel"), "addEventListener");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(cancelAddEventListener).toHaveBeenCalledTimes(1);
@@ -800,7 +800,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.errorLoadMessage).toBe("Could not load your image.\nUse png or jpg file.");
@@ -821,7 +821,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.errorLoadMessage).toBe("error load");
@@ -852,26 +852,26 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.callbacks).toStrictEqual({
             init: null,
             zoom: {
-                init: null,
-                update: null,
+                init  : null,
+                update: null
             },
             image: {
                 success: null,
-                error: null,
+                error  : null
             },
             save: {
-                'update_form_data': null,
-                success: null,
-                error: null,
+                update_form_data: null,
+                success         : null,
+                error           : null
             },
             cancel: null,
-            draw: null
+            draw  : null
         });
 
         done();
@@ -896,9 +896,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function aze in data-uploader-callback-init');
+        expect(err.message).toBe("Invalid function aze in data-uploader-callback-init");
 
         // ---
 
@@ -921,9 +921,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function aze in data-uploader-callback-zoom-init');
+        expect(err.message).toBe("Invalid function aze in data-uploader-callback-zoom-init");
 
         // ---
 
@@ -946,9 +946,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function aze in data-uploader-callback-zoom-update');
+        expect(err.message).toBe("Invalid function aze in data-uploader-callback-zoom-update");
 
         // ---
 
@@ -971,9 +971,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function window.wrce.uio in data-uploader-callback-image-success');
+        expect(err.message).toBe("Invalid function window.wrce.uio in data-uploader-callback-image-success");
 
         // ---
 
@@ -996,9 +996,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function window.wrong_namespace.uio in data-uploader-callback-image-error');
+        expect(err.message).toBe("Invalid function window.wrong_namespace.uio in data-uploader-callback-image-error");
 
         // ---
 
@@ -1021,9 +1021,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function ppp in data-uploader-callback-save-update_form_data');
+        expect(err.message).toBe("Invalid function ppp in data-uploader-callback-save-update_form_data");
 
         // ---
 
@@ -1046,9 +1046,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function ppp in data-uploader-callback-save-success');
+        expect(err.message).toBe("Invalid function ppp in data-uploader-callback-save-success");
 
         // ---
 
@@ -1071,9 +1071,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function aaa in data-uploader-callback-save-error');
+        expect(err.message).toBe("Invalid function aaa in data-uploader-callback-save-error");
 
         // ---
 
@@ -1096,9 +1096,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function cancel in data-uploader-callback-cancel');
+        expect(err.message).toBe("Invalid function cancel in data-uploader-callback-cancel");
 
         // ---
 
@@ -1121,9 +1121,9 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="cancel"></button>
 </div>`;
-        err = new Uploader(document.getElementById('uploader'));
+        err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid function draw in data-uploader-callback-draw');
+        expect(err.message).toBe("Invalid function draw in data-uploader-callback-draw");
 
         // ---
 
@@ -1150,7 +1150,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.callbacks.init).toBe(window.init);
@@ -1179,18 +1179,18 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var callbackInit = jest.spyOn(window, 'init');
-        var callbackZoomInit = jest.spyOn(window, 'zoomInit');
+        var callbackInit = jest.spyOn(window, "init");
+        var callbackZoomInit = jest.spyOn(window, "zoomInit");
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
 
         expect(uploader.callbacks.init).toBe(window.init);
-        expect(callbackInit).toHaveBeenCalledWith(uploader, 'Uploader');
+        expect(callbackInit).toHaveBeenCalledWith(uploader, "Uploader");
         expect(callbackInit).toHaveBeenCalledTimes(1);
 
         expect(uploader.callbacks.zoom.init).toBe(window.zoomInit);
-        expect(callbackZoomInit).toHaveBeenCalledWith(uploader, 'initZoom');
+        expect(callbackZoomInit).toHaveBeenCalledWith(uploader, "initZoom");
         expect(callbackZoomInit).toHaveBeenCalledTimes(1);
 
         done();
@@ -1209,7 +1209,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.scaleFactor).toBe(2.1);
 
@@ -1227,7 +1227,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.scaleFactor).toBe(1.05);
 
@@ -1246,9 +1246,9 @@ describe("uploader", function(){
     <input type="file" id="input_file" />
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
-        var err = new Uploader(document.getElementById('uploader'));
+        var err = new Uploader(document.getElementById("uploader"));
         expect(err).toBeInstanceOf(Error);
-        expect(err.message).toBe('Invalid css class "canvas moving" in data-uploader-css-canvas_moving, space is not allowed');
+        expect(err.message).toBe(`Invalid css class "canvas moving" in data-uploader-css-canvas_moving, space is not allowed`);
 
         // ---
 
@@ -1261,7 +1261,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
     <button id="save"></button>
 </div>`;
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.cssClassCanvasMoving).toBe("");
 
@@ -1281,7 +1281,7 @@ describe("uploader", function(){
     <canvas id="canvas" width="100" height="100"></canvas>
 </div>`;
 
-        var uploader = new Uploader(document.getElementById('uploader'));
+        var uploader = new Uploader(document.getElementById("uploader"));
         expect(uploader).not.toBeInstanceOf(Error);
         expect(uploader.cssClassCanvasMoving).toBe("canvas--moving");
 

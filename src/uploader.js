@@ -88,21 +88,21 @@ Uploader.prototype.initAttributes = function initAttributes() {
     this.callbacks = {
         init: null,
         zoom: {
-            init: null,
+            init  : null,
             update: null
         },
         image: {
             success: null,
-            error: null
+            error  : null
         },
         save: {
-            /* eslint-disable-next-line camelcase */
+            // eslint-disable-next-line camelcase
             update_form_data: null,
-            success: null,
-            error: null
+            success         : null,
+            error           : null
         },
         cancel: null,
-        draw: null
+        draw  : null
     };
 
     this.errorLoadMessage = "Could not load your image.\nUse png or jpg file.";
@@ -140,7 +140,7 @@ Uploader.prototype.verifyMandatoryDataAttributes = function verifyMandatoryDataA
     return null;
 };
 
-/* eslint-disable max-lines-per-function,max-statements,complexity */
+// eslint-disable-next-line max-lines-per-function,max-statements,complexity
 Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAttributes(masterDom) {
     /** @type {(string|null)} */
     var divErrorID;
@@ -231,7 +231,7 @@ Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAtt
         }
 
         this.maskRaw.size = {
-            width: maskSizeWidth,
+            width : maskSizeWidth,
             height: maskSizeHeight
         };
     }
@@ -454,12 +454,12 @@ Uploader.prototype.initMask = function initMask() {
     }
 
     this.mask = {
-        x: (this.canvasObj.width / 2) - (this.maskRaw.size.width / 2),
-        y: (this.canvasObj.height / 2) - (this.maskRaw.size.height / 2),
-        width: this.maskRaw.size.width,
-        height: this.maskRaw.size.height,
-        color: this.maskRaw.color,
-        radius: this.maskRaw.radius,
+        x         : (this.canvasObj.width / 2) - (this.maskRaw.size.width / 2),
+        y         : (this.canvasObj.height / 2) - (this.maskRaw.size.height / 2),
+        width     : this.maskRaw.size.width,
+        height    : this.maskRaw.size.height,
+        color     : this.maskRaw.color,
+        radius    : this.maskRaw.radius,
         constraint: this.maskRaw.constraint
     };
 };
@@ -680,9 +680,9 @@ Uploader.prototype.computeSize = function computeSize() {
     var ratio;
     /** @type {Mask} */
     var mask = {
-        x: 0,
-        y: 0,
-        width: this.canvasObj.width,
+        x     : 0,
+        y     : 0,
+        width : this.canvasObj.width,
         height: this.canvasObj.height
     };
 
@@ -694,9 +694,9 @@ Uploader.prototype.computeSize = function computeSize() {
     }
 
     this.imgSizeComputed = {
-        x: mask.x,
-        y: mask.y,
-        width: mask.width,
+        x     : mask.x,
+        y     : mask.y,
+        width : mask.width,
         height: mask.height
     };
 
@@ -766,19 +766,19 @@ Uploader.prototype.drawMask = function drawMask() {
     width = this.mask.width;
     height = this.mask.height;
     radius = {
-        topLeft: this.mask.radius,
-        topRight: this.mask.radius,
+        topLeft    : this.mask.radius,
+        topRight   : this.mask.radius,
         bottomRight: this.mask.radius,
-        bottomLeft: this.mask.radius
+        bottomLeft : this.mask.radius
     };
 
     this.canvasContext.moveTo(x + radius.topLeft, y);
-    this.canvasContext.lineTo(x + width - radius.topRight, y);
+    this.canvasContext.lineTo((x + width) - radius.topRight, y);
     this.canvasContext.quadraticCurveTo(x + width, y, x + width, y + radius.topRight);
-    this.canvasContext.lineTo(x + width, y + height - radius.bottomRight);
-    this.canvasContext.quadraticCurveTo(x + width, y + height, x + width - radius.bottomRight, y + height);
+    this.canvasContext.lineTo(x + width, (y + height) - radius.bottomRight);
+    this.canvasContext.quadraticCurveTo(x + width, y + height, (x + width) - radius.bottomRight, y + height);
     this.canvasContext.lineTo(x + radius.bottomLeft, y + height);
-    this.canvasContext.quadraticCurveTo(x, y + height, x, y + height - radius.bottomLeft);
+    this.canvasContext.quadraticCurveTo(x, y + height, x, (y + height) - radius.bottomLeft);
     this.canvasContext.lineTo(x, y + radius.topLeft);
     this.canvasContext.quadraticCurveTo(x, y, x + radius.topLeft, y);
     this.canvasContext.closePath();

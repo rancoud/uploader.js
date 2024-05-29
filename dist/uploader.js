@@ -411,7 +411,7 @@
         error: null
       },
       save: {
-        /* eslint-disable-next-line camelcase */
+        // eslint-disable-next-line camelcase
         update_form_data: null,
         success: null,
         error: null
@@ -455,7 +455,7 @@
     return null;
   };
 
-  /* eslint-disable max-lines-per-function,max-statements,complexity */
+  // eslint-disable-next-line max-lines-per-function,max-statements,complexity
   Uploader.prototype.verifyOptionalDataAttributes = function verifyOptionalDataAttributes(masterDom) {
     /** @type {(string|null)} */
     var divErrorID;

@@ -197,7 +197,7 @@ function trackTransforms(ctx) {
     // eslint-disable-next-line func-names
     ctx.rotate = function(radians) {
         // eslint-disable-next-line no-magic-numbers
-        xform = xform.rotate(radians * 180 / Math.PI);
+        xform = xform.rotate((radians * 180) / Math.PI);
 
         return rotate.call(ctx, radians);
     };

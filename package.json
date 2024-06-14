@@ -4,7 +4,7 @@
   "description": "JS Uploader",
   "scripts": {
     "test": "jest --coverage --coverageDirectory=./coverage -- tests/*.test.js",
-    "build": "node build.cjs && uglifyjs dist/uploader.js --mangle --webkit --compress \"drop_console=true,passes=5\" --comments \"/MIT License/\" -o dist/uploader.min.js && jest",
+    "build": "node build.cjs && uglifyjs dist/uploader.js --mangle --webkit --compress \"drop_console=true,module=false,passes=5\" --comments \"/MIT License/\" -o dist/uploader.min.js && jest",
     "jsdoc": "jsdoc -c jsdoc.conf.json",
     "eslint": "eslint --max-warnings=0 src/*.js tests/*.js",
     "eslint:fix": "eslint --fix src/*.js tests/*.js"

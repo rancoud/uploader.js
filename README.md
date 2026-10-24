@@ -1,7 +1,6 @@
 # uploader.js
 
 [![Test workflow](https://img.shields.io/github/actions/workflow/status/rancoud/uploader.js/test.yml?branch=main)](https://github.com/rancoud/uploader.js/actions/workflows/test.yml)
-[![Codecov](https://img.shields.io/codecov/c/github/rancoud/uploader.js?logo=codecov)](https://codecov.io/gh/rancoud/uploader.js)
 
 JS Uploader take care of your image upload, resize, pan, zoom.
 
